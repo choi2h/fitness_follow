@@ -38,4 +38,13 @@ public class Product {
 
     @Column(name = "USE_YN")
     private Boolean isUse;
+
+    public void setBranch(Branch branch) {
+        this.branch = branch;
+
+        if(!branch.getProductList().contains(this)) {
+            branch.addProduct(this);
+        }
+
+    }
 }
