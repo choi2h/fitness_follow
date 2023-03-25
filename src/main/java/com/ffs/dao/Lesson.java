@@ -13,14 +13,16 @@ public class Lesson {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
+    @Column(name = "LESSON_ID")
     private Long id;
 
-    @Column(name = "PT_ID")
-    private Long PtId;
+    @ManyToOne
+    @JoinColumn(name = "PT_ID")
+    private Pt pt;
 
-    @Column(name = "EMPLOYEE_ID")
-    private Long employeeId;
+    @ManyToOne
+    @JoinColumn(name = "EMPLOYEE_ID")
+    private Employee employee;
 
     @Column(name = "LESSON_DATETIME")
     private LocalDateTime lessonDateTime;

@@ -18,17 +18,20 @@ public class PurchaseHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "BRANCH_ID")
-    private Long branchId;
+    @ManyToOne
+    @JoinColumn(name = "BRANCH_ID")
+    private Branch branch;
 
-    @Column(name = "MEMBER_ID")
-    private Long memberId;
+    @ManyToOne
+    @JoinColumn(name = "MEMBER_ID")
+    private Member member;
 
     @Column(name = "PRODUCT_ID")
     private Long productId;
 
-    @Column(name = "EMPLOYEE_ID")
-    private Long employeeId;
+    @ManyToOne
+    @JoinColumn(name = "EMPLOYEE_ID")
+    private Employee employee;
 
     @Column(name = "DATETIME")
     private LocalDate dateTime;

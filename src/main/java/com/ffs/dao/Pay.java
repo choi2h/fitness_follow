@@ -4,20 +4,25 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
 @Getter @Setter
-@Table(name = "MEMBERSHIP")
+@Table(name = "PAY")
 public class Pay {
 
     @Id
-    @Column(name = "ID")
+    @Column(name = "PAY_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "EMPLOYEE_ID")
-    private Long employeeId;
+    @ManyToOne
+    @JoinColumn(name = "EMPLOYEE_ID")
+    private Employee employee;
+
+    @Column(name = "pay")
+    private BigDecimal pay;
 
     @Column(name = "PAY_DATE")
     private LocalDate payDate; // YYYY-MM

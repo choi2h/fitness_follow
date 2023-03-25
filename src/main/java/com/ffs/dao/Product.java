@@ -17,8 +17,9 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "BRANCH_ID")
-    private Long branchId;
+    @ManyToOne
+    @JoinColumn(name = "BRANCH_ID")
+    private Branch branch;
 
     @Column(name = "NAME")
     private String name;

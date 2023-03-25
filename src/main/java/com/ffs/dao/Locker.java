@@ -14,16 +14,18 @@ public class Locker {
 
     @Id
     @Column(name = "NUMBER")
-    private Long number;
+    private Integer number;
 
-    @Column(name = "BRANCH_ID")
-    private Long branchId;
+    @ManyToOne
+    @JoinColumn(name = "BRANCH_ID")
+    private Branch branch;
 
     @Column(name = "STATUS")
     private String status; // (사용안함, 사용중, 사용불가, 만기초과)
 
-    @Column(name = "MEMBER_ID")
-    private Long memberId;
+    @OneToOne
+    @JoinColumn(name = "MEMBER_ID")
+    private Member member;
 
     @Column(name = "START_DATE")
     private LocalDate startDate;

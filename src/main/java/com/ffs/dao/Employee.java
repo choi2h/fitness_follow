@@ -11,12 +11,13 @@ import javax.persistence.*;
 public class Employee {
 
     @Id
-    @Column(name = "ID")
+    @Column(name = "EMPLOYEE_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "BRANCH_ID")
-    private Long branchId;
+    @ManyToOne
+    @JoinColumn(name = "BRANCH_ID")
+    private Branch branch;
 
     @Column(name = "NAME")
     private String name;
