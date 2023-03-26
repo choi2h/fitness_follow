@@ -3,12 +3,11 @@ package com.ffs.controller;
 import com.ffs.common.exception.ServiceResultCodeException;
 import com.ffs.dao.BranchGroup;
 import com.ffs.dto.RegisterBranchGroupRequest;
-import com.ffs.dto.RegisterBranchGroupResult;
+import com.ffs.dto.BranchGroupResult;
 import com.ffs.service.BranchGroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,7 +23,7 @@ public class BranchGroupController {
     @PostMapping
     public ResponseEntity<Object> registerNewBranchGroup(@RequestBody @Valid RegisterBranchGroupRequest request) {
         Long branchGroupId = branchGroupService.registerNewBranchGroup(request);
-        RegisterBranchGroupResult response = RegisterBranchGroupResult.builder().id(branchGroupId).build();
+        BranchGroupResult response = BranchGroupResult.builder().id(branchGroupId).build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -38,7 +37,7 @@ public class BranchGroupController {
             throw e;
         }
 
-        RegisterBranchGroupResult response = RegisterBranchGroupResult.builder().branchGroupList(branchGroups).build();
+        BranchGroupResult response = BranchGroupResult.builder().branchGroupList(branchGroups).build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -53,7 +52,7 @@ public class BranchGroupController {
             throw e;
         }
 
-        RegisterBranchGroupResult response = RegisterBranchGroupResult.builder().branchGroup(branchGroup).build();
+        BranchGroupResult response = BranchGroupResult.builder().branchGroup(branchGroup).build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

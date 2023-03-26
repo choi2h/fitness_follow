@@ -10,7 +10,7 @@ import java.util.List;
 
 @Builder @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RegisterBranchGroupResult extends AbstractResponse {
+public class BranchGroupResult extends AbstractResponse {
 
     private static final long serialVersionUID = 4494064209636802405L;
 
