@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,7 +21,7 @@ public class BranchGroup {
     private String name;
 
     @OneToMany(mappedBy = "branchGroup")
-    private List<Branch> branchList;
+    private List<Branch> branchList = new ArrayList<>();
 
     public void addBranch(Branch branch) {
         this.branchList.add(branch);
