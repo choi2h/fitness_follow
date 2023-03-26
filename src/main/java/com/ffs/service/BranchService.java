@@ -4,6 +4,7 @@ import com.ffs.common.exception.ServiceResultCodeException;
 import com.ffs.dao.Branch;
 import com.ffs.dao.BranchGroup;
 import com.ffs.dto.RegisterBranchRequest;
+import com.ffs.dto.UpdateBranchRequest;
 import com.ffs.repository.BranchGroupRepository;
 import com.ffs.repository.BranchRepository;
 import com.ffs.util.BranchResultCode;
@@ -66,6 +67,21 @@ public class BranchService {
         Branch branch = optionalBranch.get();
         log.debug("Found branch by id. id={}, name={}", id, branch.getName());
         return branch;
+    }
+
+    public Long updateBranchById(Long id, UpdateBranchRequest request) {
+        Optional<Branch> optionalBranch = branchRepository.findById(id);
+        if(optionalBranch.isEmpty()) {
+            throw new ServiceResultCodeException(BranchResultCode.NOT_EXIST_BRANCH, id);
+        }
+
+        Branch branch = optionalBranch.get();
+        branch.setPhoneNumber(request.getPhoneNumber());
+        branch.setAddress(request.getAddress());
+        branch.setName(request.getName());
+        branch = branchRepository.save(branch);
+
+        return branch.getId();
     }
 
     private Branch makeNewBranch(RegisterBranchRequest request, BranchGroup branchGroup) {

@@ -3,6 +3,7 @@ package com.ffs.controller;
 import com.ffs.dao.Branch;
 import com.ffs.dto.BranchResult;
 import com.ffs.dto.RegisterBranchRequest;
+import com.ffs.dto.UpdateBranchRequest;
 import com.ffs.service.BranchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -42,5 +43,12 @@ public class BranchController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @PutMapping("/{id}")
+    private ResponseEntity<Object> updateBranch(@PathVariable Long id, @RequestBody UpdateBranchRequest request) {
+        Long result = branchService.updateBranchById(id, request);
+        BranchResult branchResult = BranchResult.builder().id(result).build();
+
+        return new ResponseEntity<>(branchResult, HttpStatus.OK);
+    }
 
 }
