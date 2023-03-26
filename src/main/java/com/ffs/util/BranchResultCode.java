@@ -10,7 +10,9 @@ public enum BranchResultCode implements ResultCode<String> {
     OK(DefaultResultCode.OK),
     FAIL(DefaultResultCode.FAILED),
     NO_REGISTERED_GROUPS("G001", "등록되어 있는 그룹이 없습니다.", HttpStatus.NOT_FOUND),
-    NOT_EXIST_BRANCH_GROUP("G002", "존재하지 않는 그룹입니다.", HttpStatus.NOT_FOUND)
+    NOT_EXIST_BRANCH_GROUP("G002", "존재하지 않는 그룹입니다.", HttpStatus.NOT_FOUND),
+    NOT_REGISTERED_BRANCH("B001", "등록되어 있는 지점이 없습니다.", HttpStatus.NOT_FOUND),
+    NOT_EXIST_BRANCH("B002", "존재하지 않는 지점입니다.", HttpStatus.NOT_FOUND)
     ;
 
     @Getter
