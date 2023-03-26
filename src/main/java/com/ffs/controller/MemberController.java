@@ -15,7 +15,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/employee")
+@RequestMapping("/member")
 @RequiredArgsConstructor
 public class MemberController {
 
