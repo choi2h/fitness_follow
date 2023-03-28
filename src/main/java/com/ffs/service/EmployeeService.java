@@ -56,7 +56,7 @@ public class EmployeeService {
         Optional<Employee> optionalEmployee = employeeRepository.findById(id);
         if(optionalEmployee.isEmpty()) {
             log.debug("Not exist employee from id. id={}", id);
-            throw new ServiceResultCodeException(EmployeeResultCode.NOT_EXIST_EMPlOYEE, id);
+            throw new ServiceResultCodeException(EmployeeResultCode.NOT_EXIST_EMPLOYEE, id);
         }
 
         Employee employee = optionalEmployee.get();
