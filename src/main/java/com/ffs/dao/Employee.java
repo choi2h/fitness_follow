@@ -43,11 +43,4 @@ public class Employee {
     @Column(name = "PASSWORD_SALT")
     private String passwordSalt;
 
-    public void setBranch(Branch branch) {
-        this.branch = branch;
-
-        if(!branch.getEmployeeList().contains(this)) {
-            branch.addEmployee(this);
-        }
-    }
 }

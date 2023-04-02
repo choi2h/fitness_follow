@@ -47,11 +47,4 @@ public class Member {
     @Column(name = "PASSWORD_SALT")
     private String passwordSalt;
 
-    public void setBranch(Branch branch) {
-        this.branch = branch;
-
-        if(!branch.getMemberList().contains(this)) {
-            branch.addMember(this);
-        }
-    }
 }

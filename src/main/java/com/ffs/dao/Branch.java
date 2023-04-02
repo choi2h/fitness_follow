@@ -29,44 +29,4 @@ public class Branch {
     @JoinColumn(name = "GROUP_ID")
     private BranchGroup branchGroup;
 
-    @OneToMany(mappedBy = "branch")
-    private List<Employee> employeeList;
-
-    @OneToMany(mappedBy = "branch")
-    private List<Member> memberList;
-
-    @OneToMany(mappedBy = "branch")
-    private List<Product> productList;
-
-    public void setBranchGroup(BranchGroup branchGroup) {
-        this.branchGroup = branchGroup;
-
-        if(!branchGroup.getBranchList().equals(this)) {
-            branchGroup.addBranch(this);
-        }
-    }
-
-    public void addEmployee(Employee employee) {
-        this.employeeList.add(employee);
-
-        if(!employee.getBranch().equals(this)) {
-            employee.setBranch(this);
-        }
-    }
-
-    public void addMember(Member member) {
-        this.memberList.add(member);
-
-        if(!member.getBranch().equals(this)) {
-            member.setBranch(this);
-        }
-    }
-
-    public void addProduct(Product product) {
-        this.productList.add(product);
-
-        if(!product.getBranch().equals(this)) {
-            product.setBranch(this);
-        }
-    }
 }
