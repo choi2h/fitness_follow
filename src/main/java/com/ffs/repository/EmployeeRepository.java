@@ -1,6 +1,7 @@
 package com.ffs.repository;
 
 import com.ffs.dao.Employee;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 
 import java.util.List;
@@ -13,4 +14,8 @@ public interface EmployeeRepository extends Repository<Employee, Long> {
     Optional<Employee> findById(Long id);
 
     List<Employee> findAll();
+
+    @Query("SELECT e FROM Employee e " +
+            "WHERE e.branch.id = :branchId")
+    List<Employee> findAllByBranchId(Long branchId);
 }

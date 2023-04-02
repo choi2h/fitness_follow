@@ -65,6 +65,19 @@ public class EmployeeService {
         return employee;
     }
 
+    public List<Employee> getEmployeeByBranchId(Long branchId) {
+        log.debug("Search employee list by branch id. branchId={}", branchId);
+
+        List<Employee> employeeList = employeeRepository.findAllByBranchId(branchId);
+        if(employeeList.isEmpty()) {
+            log.debug("Not exist employee by branch id. branchId={}", branchId);
+            throw new ServiceResultCodeException(EmployeeResultCode.NOT_EXIST_EMPLOYEE_FOR_BRANCH, branchId);
+        }
+
+        log.debug("Found employee list by branch id. count={}", employeeList.size());
+        return employeeList;
+    }
+
     private Employee makeNewEmployee(RegisterEmployeeRequest request, Branch branch) {
         Employee employee = new Employee();
         employee.setBranch(branch);

@@ -43,7 +43,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getBranchById(@PathVariable Long id) {
+    public ResponseEntity<Object> getEmployeeById(@PathVariable Long id) {
         Employee employee;
 
         try {
@@ -54,6 +54,20 @@ public class EmployeeController {
 
         EmployeeResult response = EmployeeResult.builder().employee(employee).build();
 
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/all/{id}")
+    public ResponseEntity<Object> getEmployeeByBranchId(@PathVariable Long id) {
+        List<Employee> employeeList;
+
+        try{
+            employeeList = employeeService.getEmployeeByBranchId(id);
+        } catch (ServiceResultCodeException e) {
+            throw e;
+        }
+
+        EmployeeResult response = EmployeeResult.builder().employeeList(employeeList).build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
