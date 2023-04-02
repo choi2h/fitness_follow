@@ -65,6 +65,20 @@ public class MemberService {
         return member;
     }
 
+    public List<Member> getMemberListByBranchId(Long branchId) {
+        log.debug("Search member list by branch id. branchId={}", branchId);
+
+        List<Member> memberList = memberRepository.findAllByBranchId(branchId);
+        if(memberList.isEmpty()) {
+            log.debug("Not exist member by branch id. branchId={}", branchId);
+            throw new ServiceResultCodeException(MemberResultCode.NOT_EXIST_MEMBER_FOR_BRANCH, branchId);
+        }
+
+        log.debug("Found member list by branch id. count={}", memberList.size());
+        return memberList;
+
+    }
+
     private Member makeNewMember(RegisterMemberRequest request, Branch branch) {
         Member member = new Member();
         member.setBranch(branch);

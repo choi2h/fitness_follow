@@ -10,7 +10,8 @@ public enum MemberResultCode implements ResultCode<String> {
     OK(DefaultResultCode.OK),
     FAIL(DefaultResultCode.FAILED),
     NO_REGISTERED_MEMBER("M001", "등록되어 있는 회원이 없습니다.", HttpStatus.NOT_FOUND),
-    NOT_EXIST_MEMBER("M002", "존재하는 않는 회원입니다.", HttpStatus.NOT_FOUND)
+    NOT_EXIST_MEMBER("M002", "존재하는 않는 회원입니다.", HttpStatus.NOT_FOUND),
+    NOT_EXIST_MEMBER_FOR_BRANCH("M003", "해당 지점에 등록되어있는 회원이 없습니다.", HttpStatus.NOT_FOUND)
     ;
 
     @Getter

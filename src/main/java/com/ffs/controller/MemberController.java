@@ -44,7 +44,7 @@ public class MemberController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getBranchById(@PathVariable Long id) {
+    public ResponseEntity<Object> getMemberById(@PathVariable Long id) {
         Member member;
 
         try {
@@ -54,6 +54,21 @@ public class MemberController {
         }
 
         MemberResult response = MemberResult.builder().member(member).build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/all/{id}")
+    public ResponseEntity<Object> getMemberListByBranchId(@PathVariable Long id) {
+        List<Member> memberList;
+
+        try{
+            memberList = memberService.getMemberListByBranchId(id);
+        } catch (ServiceResultCodeException e) {
+            throw e;
+        }
+
+        MemberResult response = MemberResult.builder().memberList(memberList).build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
