@@ -24,9 +24,9 @@ public class BranchService {
     private final BranchRepository branchRepository;
 
     public Long registerBranch(RegisterBranchRequest request) {
-        log.debug("Register new branch. name={}", request.getName());
+        log.debug("Register new branch. name={}, groupId={}", request.getName(), request.getGroupId());
 
-        Long branchGroupId = request.getBranchGroupId();
+        Long branchGroupId = request.getGroupId();
         Optional<BranchGroup> optionalBranchGroup = branchGroupRepository.findById(branchGroupId);
         if(optionalBranchGroup.isEmpty()) {
             log.debug("Not exist branch from id. id={}", branchGroupId);
@@ -82,6 +82,16 @@ public class BranchService {
         branch = branchRepository.save(branch);
 
         return branch.getId();
+    }
+
+    public List<Branch> getAllBranchByBranchGroupId(Long branchGroupId) {
+        List<Branch> branchList = branchRepository.findAllByBranchGroup(branchGroupId);
+        if(branchList.isEmpty()) {
+            log.debug("Not exist branch anyone.");
+            throw new ServiceResultCodeException(BranchResultCode.NOT_REGISTERED_BRANCH);
+        }
+
+        return branchList;
     }
 
     private Branch makeNewBranch(RegisterBranchRequest request, BranchGroup branchGroup) {

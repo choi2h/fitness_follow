@@ -1,5 +1,7 @@
 package com.ffs.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ffs.dao.Branch;
 import com.ffs.dto.BranchResult;
 import com.ffs.dto.RegisterBranchRequest;
@@ -10,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -20,7 +23,7 @@ public class BranchController {
     private final BranchService branchService;
 
     @PostMapping
-    private ResponseEntity<Object> registerNewBranch(RegisterBranchRequest request) {
+    private ResponseEntity<Object> registerNewBranch(@RequestBody @Valid RegisterBranchRequest request) {
         Long id = branchService.registerBranch(request);
         BranchResult result = BranchResult.builder().id(id).build();
 
@@ -51,4 +54,24 @@ public class BranchController {
         return new ResponseEntity<>(branchResult, HttpStatus.OK);
     }
 
+    @GetMapping("/all/{id}")
+    public ResponseEntity<Object> getBranchListByGroupId(@PathVariable Long id) {
+        List<Branch> branchList = branchService.getAllBranchByBranchGroupId(id);
+        BranchResult result = BranchResult.builder().branchList(branchList).build();
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    public static void main(String[] args) throws JsonProcessingException {
+        RegisterBranchRequest request = RegisterBranchRequest.builder()
+                .name("k2")
+                .address("garak-dong")
+                .phoneNumber("02-5221-1251")
+//                .groupId(1L)
+                .build();
+
+        ObjectMapper obj = new ObjectMapper();
+        String string = obj.writeValueAsString(request);
+        System.out.println(string);
+    }
 }

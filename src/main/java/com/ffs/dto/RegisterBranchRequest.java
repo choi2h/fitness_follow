@@ -1,17 +1,28 @@
 package com.ffs.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
+
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 public class RegisterBranchRequest {
 
+    private Long groupId;
+
     private String name;
+
     private String address;
+
     private String phoneNumber;
-    private Long branchGroupId;
+
+    @Builder
+    public RegisterBranchRequest
+            (@NonNull Long groupId, @NonNull String name, @NonNull String address, String phoneNumber) {
+        this.groupId = groupId;
+        this.name = name;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+    }
 
 }
