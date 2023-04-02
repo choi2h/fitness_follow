@@ -62,16 +62,4 @@ public class BranchController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    public static void main(String[] args) throws JsonProcessingException {
-        RegisterBranchRequest request = RegisterBranchRequest.builder()
-                .name("k2")
-                .address("garak-dong")
-                .phoneNumber("02-5221-1251")
-//                .groupId(1L)
-                .build();
-
-        ObjectMapper obj = new ObjectMapper();
-        String string = obj.writeValueAsString(request);
-        System.out.println(string);
-    }
 }
