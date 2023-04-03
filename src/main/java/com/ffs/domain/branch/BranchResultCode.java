@@ -1,4 +1,4 @@
-package com.ffs.util;
+package com.ffs.domain.branch;
 
 import com.ffs.common.DefaultResultCode;
 import com.ffs.common.ResultCode;

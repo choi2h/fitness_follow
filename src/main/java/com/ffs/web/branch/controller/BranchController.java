@@ -1,6 +1,6 @@
 package com.ffs.web.branch.controller;
 
-import com.ffs.domain.branch.Branch;
+import com.ffs.domain.branch.entity.Branch;
 import com.ffs.web.branch.BranchResult;
 import com.ffs.web.branch.request.RegisterBranchRequest;
 import com.ffs.web.branch.request.UpdateBranchRequest;

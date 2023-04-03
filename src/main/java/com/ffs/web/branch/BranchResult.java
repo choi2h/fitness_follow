@@ -2,7 +2,7 @@ package com.ffs.web.branch;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ffs.common.AbstractResponse;
-import com.ffs.domain.branch.Branch;
+import com.ffs.domain.branch.entity.Branch;
 import lombok.Builder;
 import lombok.Getter;
 

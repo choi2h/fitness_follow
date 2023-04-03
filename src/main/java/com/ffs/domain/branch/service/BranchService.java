@@ -1,13 +1,13 @@
 package com.ffs.domain.branch.service;
 
 import com.ffs.common.exception.ServiceResultCodeException;
-import com.ffs.domain.branch.Branch;
+import com.ffs.domain.branch.entity.Branch;
 import com.ffs.domain.branch_group.BranchGroup;
 import com.ffs.web.branch.request.RegisterBranchRequest;
 import com.ffs.web.branch.request.UpdateBranchRequest;
 import com.ffs.domain.branch_group.repository.BranchGroupRepository;
 import com.ffs.domain.branch.repository.BranchRepository;
-import com.ffs.util.BranchResultCode;
+import com.ffs.domain.branch.BranchResultCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

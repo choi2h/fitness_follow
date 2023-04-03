@@ -1,6 +1,6 @@
 package com.ffs.domain.branch.repository;
 
-import com.ffs.domain.branch.Branch;
+import com.ffs.domain.branch.entity.Branch;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 

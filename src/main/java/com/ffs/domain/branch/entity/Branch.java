@@ -1,4 +1,4 @@
-package com.ffs.domain.branch;
+package com.ffs.domain.branch.entity;
 
 import com.ffs.domain.branch_group.BranchGroup;
 import lombok.Getter;

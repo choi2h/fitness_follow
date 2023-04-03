@@ -1,7 +1,7 @@
 package com.ffs.domain.purchaseHistory;
 
 import com.ffs.domain.member.Member;
-import com.ffs.domain.branch.Branch;
+import com.ffs.domain.branch.entity.Branch;
 import com.ffs.domain.employee.Employee;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,6 +1,6 @@
 package com.ffs.domain.member;
 
-import com.ffs.domain.branch.Branch;
+import com.ffs.domain.branch.entity.Branch;
 import com.ffs.domain.employee.Employee;
 import lombok.Getter;
 import lombok.Setter;

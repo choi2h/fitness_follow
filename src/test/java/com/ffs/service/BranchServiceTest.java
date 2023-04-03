@@ -1,6 +1,6 @@
 package com.ffs.service;
 
-import com.ffs.domain.branch.Branch;
+import com.ffs.domain.branch.entity.Branch;
 import com.ffs.domain.branch.service.BranchService;
 import com.ffs.domain.branch_group.BranchGroup;
 import com.ffs.web.branch.request.UpdateBranchRequest;

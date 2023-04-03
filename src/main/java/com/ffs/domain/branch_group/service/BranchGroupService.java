@@ -4,7 +4,7 @@ import com.ffs.common.exception.ServiceResultCodeException;
 import com.ffs.domain.branch_group.BranchGroup;
 import com.ffs.web.branch_group.request.RegisterBranchGroupRequest;
 import com.ffs.domain.branch_group.repository.BranchGroupRepository;
-import com.ffs.util.BranchResultCode;
+import com.ffs.domain.branch.BranchResultCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

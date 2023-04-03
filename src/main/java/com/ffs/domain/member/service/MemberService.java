@@ -1,12 +1,12 @@
 package com.ffs.domain.member.service;
 
 import com.ffs.common.exception.ServiceResultCodeException;
-import com.ffs.domain.branch.Branch;
+import com.ffs.domain.branch.entity.Branch;
 import com.ffs.domain.member.Member;
 import com.ffs.web.member.request.RegisterMemberRequest;
 import com.ffs.domain.branch.repository.BranchRepository;
 import com.ffs.domain.member.repository.MemberRepository;
-import com.ffs.util.BranchResultCode;
+import com.ffs.domain.branch.BranchResultCode;
 import com.ffs.util.MemberResultCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
