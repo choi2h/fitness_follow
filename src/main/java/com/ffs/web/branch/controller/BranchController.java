@@ -45,7 +45,7 @@ public class BranchController {
     }
 
     @PutMapping("/{id}")
-    private ResponseEntity<Object> updateBranch(@PathVariable Long id, @RequestBody UpdateBranchRequest request) {
+    private ResponseEntity<Object> updateBranch(@PathVariable Long id, @RequestBody @Valid UpdateBranchRequest request) {
         Long result = branchService.updateBranchById(id, request);
         BranchResult branchResult = BranchResult.builder().id(result).build();
 

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,13 +23,13 @@ public class LockerController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public void registerLocker(@RequestBody RegisterLockerRequest request) {
+    public void registerLocker(@RequestBody @Valid RegisterLockerRequest request) {
         lockerService.registerNewLocker(request);
     }
 
     @PutMapping("/{branchId}/{lockerNumber}")
-    public ResponseEntity<Object> registerMember
-            (@PathVariable Long branchId, @PathVariable int lockerNumber, @RequestBody RegisterLockerMemberRequest request) {
+    public ResponseEntity<Object> registerMember(@PathVariable Long branchId, @PathVariable int lockerNumber,
+                                                 @RequestBody @Valid RegisterLockerMemberRequest request) {
         Locker locker = lockerService.registerLockerMember(branchId, lockerNumber, request);
         LockerResult result = LockerResult.builder().locker(locker).build();
 
@@ -52,8 +53,8 @@ public class LockerController {
     }
 
     @PutMapping("/{branchId}/{lockerNumber}/status")
-    public ResponseEntity<Object> updateLockerStatusUseOrNot
-            (@PathVariable Long branchId, @PathVariable int lockerNumber, @RequestBody UpdateAvailableRequest request) {
+    public ResponseEntity<Object> updateLockerStatusUseOrNot(@PathVariable Long branchId, @PathVariable int lockerNumber,
+                                                             @RequestBody @Valid UpdateAvailableRequest request) {
         Locker locker = lockerService.updateLockerStatusToUseOrNot(branchId, lockerNumber, request);
         LockerResult result = LockerResult.builder().locker(locker).build();
 

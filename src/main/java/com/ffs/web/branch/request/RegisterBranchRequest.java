@@ -3,26 +3,24 @@ package com.ffs.web.branch.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor
 public class RegisterBranchRequest {
 
+    @NotNull
     private Long groupId;
 
+    @NotEmpty
     private String name;
 
+    @NotEmpty
     private String address;
 
+    @NotEmpty
     private String phoneNumber;
-
-    @Builder
-    public RegisterBranchRequest
-            (@NonNull Long groupId, @NonNull String name, @NonNull String address, String phoneNumber) {
-        this.groupId = groupId;
-        this.name = name;
-        this.address = address;
-        this.phoneNumber = phoneNumber;
-    }
-
 }

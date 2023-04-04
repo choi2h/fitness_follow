@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,7 +20,7 @@ public class PurchaseHistoryController {
     private final PurchaseHistoryService purchaseHistoryService;
 
     @PostMapping
-    public ResponseEntity<Object> registerPurchaseHistory(@RequestBody RegisterPurchaseHistoryRequest request) {
+    public ResponseEntity<Object> registerPurchaseHistory(@RequestBody @Valid RegisterPurchaseHistoryRequest request) {
         PurchaseHistory purchaseHistory = purchaseHistoryService.registerNewPurchaseHistory(request);
         PurchaseHistoryResult result = PurchaseHistoryResult.builder().purchaseHistory(purchaseHistory).build();
 
