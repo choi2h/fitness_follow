@@ -1,7 +1,9 @@
-package com.ffs.domain.product;
+package com.ffs.domain.product.entity;
 
 import com.ffs.domain.branch.entity.Branch;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -10,9 +12,9 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
-@Setter
+@NoArgsConstructor
 @Table(name = "PRODUCT")
-public class Product {
+public class Product { //(기본회원권, PT, 이벤트, 사물함, 운동복)
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,10 +36,26 @@ public class Product {
     @Column(name = "START_DATE")
     private LocalDate startDate;
 
-    @Column(name = "STOP_DATE")
-    private LocalDate stopDate;
+    @Column(name = "END_DATE")
+    private LocalDate endDate;
 
     @Column(name = "USE_YN")
     private Boolean isUse;
+
+    @Builder
+    public Product(Branch branch, String name, BigDecimal price, String type, LocalDate startDate, LocalDate endDate) {
+        this.branch = branch;
+        this.name = name;
+        this.price = price;
+        this.type = type;
+        this.startDate = startDate;
+        this.endDate = endDate;
+
+        this.isUse = startDate.compareTo(LocalDate.now()) < 0 ;
+    }
+
+    public void updateUseYn(boolean isUse) {
+        this.isUse = isUse;
+    }
 
 }
