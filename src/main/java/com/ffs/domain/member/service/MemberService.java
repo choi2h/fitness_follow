@@ -7,7 +7,7 @@ import com.ffs.web.member.request.RegisterMemberRequest;
 import com.ffs.domain.branch.repository.BranchRepository;
 import com.ffs.domain.member.repository.MemberRepository;
 import com.ffs.domain.branch.BranchResultCode;
-import com.ffs.util.MemberResultCode;
+import com.ffs.domain.member.MemberResultCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

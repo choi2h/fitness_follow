@@ -11,7 +11,7 @@ import com.ffs.domain.locker.entity.Status;
 import com.ffs.domain.locker.repository.LockerRepository;
 import com.ffs.domain.member.Member;
 import com.ffs.domain.member.repository.MemberRepository;
-import com.ffs.util.MemberResultCode;
+import com.ffs.domain.member.MemberResultCode;
 import com.ffs.web.locker.request.RegisterLockerMemberRequest;
 import com.ffs.web.locker.request.RegisterLockerRequest;
 import com.ffs.web.locker.request.UpdateAvailableRequest;

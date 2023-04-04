@@ -7,7 +7,7 @@ import com.ffs.web.employee.request.RegisterEmployeeRequest;
 import com.ffs.domain.branch.repository.BranchRepository;
 import com.ffs.domain.employee.repository.EmployeeRepository;
 import com.ffs.domain.branch.BranchResultCode;
-import com.ffs.util.EmployeeResultCode;
+import com.ffs.domain.employee.EmployeeResultCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
