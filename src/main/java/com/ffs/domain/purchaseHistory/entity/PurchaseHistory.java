@@ -1,18 +1,20 @@
-package com.ffs.domain.purchaseHistory;
+package com.ffs.domain.purchaseHistory.entity;
 
-import com.ffs.domain.member.Member;
 import com.ffs.domain.branch.entity.Branch;
 import com.ffs.domain.employee.Employee;
+import com.ffs.domain.member.Member;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
+@NoArgsConstructor
 @Table(name = "PURCHASE_HISTORY")
 public class PurchaseHistory {
 
@@ -37,11 +39,24 @@ public class PurchaseHistory {
     private Employee employee;
 
     @Column(name = "DATETIME")
-    private LocalDate dateTime;
+    private LocalDateTime dateTime;
 
     @Column(name = "PRICE")
     private BigDecimal price;
 
     @Column(name = "COMMENT")
     private String comment;
+
+    @Builder
+    public PurchaseHistory(Branch branch, Member member, Long productId, Employee employee, LocalDateTime dateTime, BigDecimal price, String comment) {
+        this.branch = branch;
+        this.member = member;
+        this.productId = productId;
+        this.employee = employee;
+        this.dateTime = dateTime;
+        this.price = price;
+        if(comment != null && !comment.isEmpty()) {
+            this.comment = comment;
+        }
+    }
 }
