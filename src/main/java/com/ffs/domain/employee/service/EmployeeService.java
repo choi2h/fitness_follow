@@ -79,15 +79,15 @@ public class EmployeeService {
     }
 
     private Employee makeNewEmployee(RegisterEmployeeRequest request, Branch branch) {
-        Employee employee = new Employee();
-        employee.setBranch(branch);
-        employee.setName(request.getName());
-        employee.setResponsibility(request.getResponsibility());
-        employee.setAddress(request.getAddress());
-        employee.setStatus(request.getStatus());
-        employee.setLoginId(request.getLoginId());
-        employee.setPassword(request.getPassword());
-
-        return employee;
+        return Employee
+                .builder()
+                .branch(branch)
+                .name(request.getName())
+                .responsibility(request.getResponsibility())
+                .address(request.getAddress())
+                .status(request.getStatus())
+                .loginId(request.getLoginId())
+                .password(request.getPassword())
+                .build();
     }
 }

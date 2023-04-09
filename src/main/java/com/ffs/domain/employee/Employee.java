@@ -1,13 +1,15 @@
 package com.ffs.domain.employee;
 
 import com.ffs.domain.branch.entity.Branch;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
-@Getter @Setter
+@Getter
+@NoArgsConstructor
 @Table(name = "EMPLOYEE")
 public class Employee {
 
@@ -43,5 +45,20 @@ public class Employee {
 
     @Column(name = "PASSWORD_SALT")
     private String passwordSalt;
+
+    @Builder
+    public Employee(Branch branch, String name, String responsibility, String address, String status,
+                    String loginId, String password, String passwordType, String passwordSalt) {
+        this.branch = branch;
+        this.name = name;
+        this.responsibility = responsibility;
+        this.address = address;
+        this.status = status;
+        this.loginId = loginId;
+        this.password = password;
+        this.passwordType = passwordType;
+        this.passwordSalt = passwordSalt;
+
+    }
 
 }
