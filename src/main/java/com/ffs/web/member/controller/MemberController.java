@@ -2,10 +2,9 @@ package com.ffs.web.member.controller;
 
 import com.ffs.common.exception.ServiceResultCodeException;
 import com.ffs.domain.member.Member;
-import com.ffs.web.employee.EmployeeResult;
+import com.ffs.domain.member.service.MemberService;
 import com.ffs.web.member.MemberResult;
 import com.ffs.web.member.request.RegisterMemberRequest;
-import com.ffs.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,14 +21,14 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping
-    public ResponseEntity<Object> registerNewEmployee(@RequestBody @Valid RegisterMemberRequest request) {
-        Long memberId = memberService.registerNewEmployee(request);
-        EmployeeResult response = EmployeeResult.builder().id(memberId).build();
+    public ResponseEntity<Object> registerNewMember(@RequestBody @Valid RegisterMemberRequest request) {
+        Member member = memberService.registerNewMember(request);
+        MemberResult response = MemberResult.builder().member(member).build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<Object> getAllEmployees() {
+    public ResponseEntity<Object> getAllMembers() {
         List<Member> memberList;
 
         try {
