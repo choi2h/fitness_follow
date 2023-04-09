@@ -70,37 +70,48 @@ public class BranchService {
     }
 
     public Long updateBranchById(Long id, UpdateBranchRequest request) {
+        log.debug("Update branch info. id={}", id);
         Optional<Branch> optionalBranch = branchRepository.findById(id);
         if(optionalBranch.isEmpty()) {
             throw new ServiceResultCodeException(BranchResultCode.NOT_EXIST_BRANCH, id);
         }
 
         Branch branch = optionalBranch.get();
-        branch.setPhoneNumber(request.getPhoneNumber());
-        branch.setAddress(request.getAddress());
-        branch.setName(request.getName());
+
+        if(!request.getAddress().equals(branch.getAddress())) {
+            log.debug("Update branch address. origin={}, new={}", branch.getAddress(), request.getAddress());
+            branch.setAddress(request.getAddress());
+        }
+
+        if(!request.getPhoneNumber().equals(branch.getPhoneNumber())) {
+            log.debug("Update branch phone number. origin={}, new={}", branch.getPhoneNumber(), request.getPhoneNumber());
+            branch.setPhoneNumber(request.getPhoneNumber());
+        }
+
         branch = branchRepository.save(branch);
 
         return branch.getId();
     }
 
     public List<Branch> getAllBranchByBranchGroupId(Long branchGroupId) {
+        log.debug("Search all branch by branch group id. branchGroupId={}", branchGroupId);
         List<Branch> branchList = branchRepository.findAllByBranchGroup(branchGroupId);
         if(branchList.isEmpty()) {
-            log.debug("Not exist branch anyone.");
+            log.debug("Nothing registered branch by branch group id. branchGroupId={}", branchGroupId);
             throw new ServiceResultCodeException(BranchResultCode.NOT_REGISTERED_BRANCH);
         }
 
+        log.debug("Found branch by branch group id. branchGroupId={}, count={}", branchGroupId, branchList.size());
         return branchList;
     }
 
     private Branch makeNewBranch(RegisterBranchRequest request, BranchGroup branchGroup) {
-        Branch branch = new Branch();
-        branch.setBranchGroup(branchGroup);
-        branch.setAddress(request.getAddress());
-        branch.setName(request.getName());
-        branch.setPhoneNumber(request.getPhoneNumber());
-
-        return branch;
+        return Branch
+                .builder()
+                .branchGroup(branchGroup)
+                .address(request.getAddress())
+                .name(request.getName())
+                .phoneNumber(request.getPhoneNumber())
+                .build();
     }
 }

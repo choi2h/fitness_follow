@@ -12,9 +12,6 @@ import javax.validation.constraints.NotEmpty;
 public class UpdateBranchRequest {
 
     @NotEmpty
-    private String name;
-
-    @NotEmpty
     private String address;
 
     @NotEmpty
