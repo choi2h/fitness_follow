@@ -2,13 +2,16 @@ package com.ffs.domain.member;
 
 import com.ffs.domain.branch.entity.Branch;
 import com.ffs.domain.employee.Employee;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
-@Getter @Setter
+@Getter
+@NoArgsConstructor
 @Table(name = "MEMBER")
 public class Member {
 
@@ -48,5 +51,23 @@ public class Member {
 
     @Column(name = "PASSWORD_SALT")
     private String passwordSalt;
+
+    @Builder
+    public Member(Branch branch, String name, String status, String address,
+                  String phoneNumber, String loginId, String password, String passwordType, String passwordSalt) {
+        this.branch = branch;
+        this.name = name;
+        this.status = status;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.loginId = loginId;
+        this.password = password;
+        this.passwordType = passwordType;
+        this.passwordSalt = passwordSalt;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
 
 }

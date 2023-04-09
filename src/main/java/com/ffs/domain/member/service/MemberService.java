@@ -80,14 +80,15 @@ public class MemberService {
     }
 
     private Member makeNewMember(RegisterMemberRequest request, Branch branch) {
-        Member member = new Member();
-        member.setBranch(branch);
-        member.setName(request.getName());
-        member.setStatus(request.getStatus());
-        member.setAddress(request.getAddress());
-        member.setPhoneNumber(request.getPhoneNumber());
-        member.setLoginId(request.getLoginId());
-        member.setPassword(request.getPassword());
-        return member;
+       return Member
+                .builder()
+                .branch(branch)
+                .name(request.getName())
+                .status(request.getStatus())
+                .address(request.getAddress())
+                .phoneNumber(request.getPhoneNumber())
+                .loginId(request.getLoginId())
+                .password(request.getPassword())
+                .build();
     }
 }
