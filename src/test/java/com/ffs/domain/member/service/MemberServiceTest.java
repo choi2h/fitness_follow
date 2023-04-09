@@ -40,7 +40,7 @@ class MemberServiceTest {
     @Test
     @Order(1)
     @DisplayName("회원을 등록할 수 있다.")
-    void registerEmployeeTest() {
+    void registerMemberTest() {
         Long branchId = branch.getId();
         String name = "최이화";
         RegisterMemberRequest request = new RegisterMemberRequest
