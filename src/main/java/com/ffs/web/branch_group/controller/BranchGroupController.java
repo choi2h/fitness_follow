@@ -22,8 +22,8 @@ public class BranchGroupController {
 
     @PostMapping
     public ResponseEntity<Object> registerNewBranchGroup(@RequestBody @Valid RegisterBranchGroupRequest request) {
-        Long branchGroupId = branchGroupService.registerNewBranchGroup(request);
-        BranchGroupResult response = BranchGroupResult.builder().id(branchGroupId).build();
+        BranchGroup branchGroup = branchGroupService.registerNewBranchGroup(request);
+        BranchGroupResult response = BranchGroupResult.builder().branchGroup(branchGroup).build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

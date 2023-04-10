@@ -1,12 +1,15 @@
 package com.ffs.domain.branch_group;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
-@Getter @Setter
+@Getter
+@NoArgsConstructor
 @Table(name = "BRANCH_GROUP")
 public class BranchGroup {
 
@@ -17,5 +20,10 @@ public class BranchGroup {
 
     @Column(name = "NAME")
     private String name;
+
+    @Builder
+    public BranchGroup(String name) {
+        this.name = name;
+    }
 
 }

@@ -1,36 +1,93 @@
 package com.ffs.domain.branch_group.service;
 
-import com.ffs.domain.branch.entity.Branch;
 import com.ffs.domain.branch_group.BranchGroup;
+import com.ffs.domain.branch_group.repository.BranchGroupRepository;
 import com.ffs.web.branch_group.request.RegisterBranchGroupRequest;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class BranchGroupServiceTest {
 
-    @Autowired
-    private BranchGroupService branchGroupService;
+    @InjectMocks
+    BranchGroupService branchGroupService;
+
+    @Mock
+    BranchGroupRepository branchGroupRepository;
 
     @Test
+    @DisplayName("새로운 지점 그룹을 등록할 수 있다.")
     void registerBranchTest() {
         String name = "Y2GYM";
-        RegisterBranchGroupRequest request = new RegisterBranchGroupRequest(name);
-        Long branchGroupId = branchGroupService.registerNewBranchGroup(request);
 
-        BranchGroup branchGroup = branchGroupService.getBranchGroup(branchGroupId);
-        assertEquals(name, branchGroup.getName());
+        // given
+        BranchGroup branchGroup = getBranchGroup(name);
+        doReturn(branchGroup).when(branchGroupRepository).save(any(BranchGroup.class));
+
+        // when
+        RegisterBranchGroupRequest request = new RegisterBranchGroupRequest(name);
+        BranchGroup result = branchGroupService.registerNewBranchGroup(request);
+
+        // then
+        assertEquals(request.getName(), result.getName());
     }
 
     @Test
+    @DisplayName("모든 지점 그룹을 조회할 수 있다.")
     void getAllBranchGroupTest() {
-        List<BranchGroup> branchGroupList = branchGroupService.getAllBranchGroup();
-        assertEquals(1, branchGroupList.size());
+        // given
+        List<BranchGroup> branchGroupList = getBranchGroupList();
+        doReturn(branchGroupList).when(branchGroupRepository).findAll();
+
+        // when
+        List<BranchGroup> resultList = branchGroupService.getAllBranchGroup();
+
+        // then
+        assertEquals(branchGroupList.size(), resultList.size());
 
     }
+
+    @Test
+    @DisplayName("ID로 특정 지점 그룹을 조회할 수 있다.")
+    void getBranchGroupTest() {
+        long id = 1;
+        String name = "Y2GYM";
+
+        // given
+        BranchGroup branchGroup = getBranchGroup(name);
+        doReturn(Optional.of(branchGroup)).when(branchGroupRepository).findById(id);
+
+        // when
+        BranchGroup result = branchGroupService.getBranchGroup(id);
+
+        // then
+        assertEquals(name, result.getName());
+    }
+
+    private BranchGroup getBranchGroup(String name) {
+        return BranchGroup.builder().name(name).build();
+    }
+
+    private List<BranchGroup> getBranchGroupList() {
+        List<BranchGroup> branchGroupList = new ArrayList<>();
+
+        for(int i=0; i<5; i++) {
+            BranchGroup branchGroup = new BranchGroup();
+            branchGroupList.add(branchGroup);
+        }
+        return branchGroupList;
+    }
+
 }

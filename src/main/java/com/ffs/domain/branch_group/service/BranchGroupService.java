@@ -19,7 +19,7 @@ public class BranchGroupService {
 
     private final BranchGroupRepository branchGroupRepository;
 
-    public Long registerNewBranchGroup(RegisterBranchGroupRequest registerRequest) {
+    public BranchGroup registerNewBranchGroup(RegisterBranchGroupRequest registerRequest) {
         log.debug("Register new branch group. name={}", registerRequest.getName());
 
         BranchGroup branchGroup = makeBranchGroup(registerRequest);
@@ -28,7 +28,7 @@ public class BranchGroupService {
         branchGroup = branchGroupRepository.save(branchGroup);
         log.debug("Success to register branch group. id={}", branchGroup.getId());
 
-        return branchGroup.getId();
+        return branchGroup;
     }
 
     public List<BranchGroup> getAllBranchGroup() {
@@ -59,11 +59,8 @@ public class BranchGroupService {
         return branchGroup;
     }
 
-    private BranchGroup makeBranchGroup(RegisterBranchGroupRequest registerRequest) {
-        String name = registerRequest.getName();
-
-        BranchGroup branchGroup = new BranchGroup();
-        branchGroup.setName(name);
-        return branchGroup;
+    private BranchGroup makeBranchGroup(RegisterBranchGroupRequest request) {
+        String name = request.getName();
+        return BranchGroup.builder().name(name).build();
     }
 }
