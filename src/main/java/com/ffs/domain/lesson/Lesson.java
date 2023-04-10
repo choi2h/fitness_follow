@@ -1,7 +1,7 @@
 package com.ffs.domain.lesson;
 
 import com.ffs.domain.employee.Employee;
-import com.ffs.domain.pt.Pt;
+import com.ffs.domain.pt.entity.Pt;
 import lombok.Getter;
 import lombok.Setter;
 
