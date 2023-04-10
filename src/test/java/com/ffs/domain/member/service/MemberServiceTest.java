@@ -2,88 +2,94 @@ package com.ffs.domain.member.service;
 
 import com.ffs.domain.branch.entity.Branch;
 import com.ffs.domain.branch.repository.BranchRepository;
-import com.ffs.domain.branch_group.BranchGroup;
-import com.ffs.domain.branch_group.repository.BranchGroupRepository;
 import com.ffs.domain.member.Member;
 import com.ffs.domain.member.repository.MemberRepository;
 import com.ffs.web.member.request.RegisterMemberRequest;
-import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 
 
-@SpringBootTest
-@TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
-    @Autowired
-    private BranchRepository branchRepository;
+    @InjectMocks
+    MemberService memberService;
 
-    @Autowired
-    private BranchGroupRepository branchGroupRepository;
+    @Mock
+    BranchRepository branchRepository;
 
-    @Autowired
-    private MemberService memberService;
-
-    private static Branch branch;
-
-    @BeforeAll
-    void registerMember() {
-        BranchGroup branchGroup = registerBranchGroup();
-        branch = registerBranch(branchGroup);
-    }
+    @Mock
+    MemberRepository memberRepository;
 
     @Test
-    @Order(1)
     @DisplayName("회원을 등록할 수 있다.")
     void registerMemberTest() {
-        Long branchId = branch.getId();
-        String name = "최이화";
-        RegisterMemberRequest request = new RegisterMemberRequest
-                (branchId, name, "일반회원", "서울시 송파구", "010-0000-0000", "qwe", "1234");
+        // given
+        Member member = Member.builder().name("최이화").build();
+        doReturn(Optional.of(new Branch())).when(branchRepository).findById(1L);
+        doReturn(member).when(memberRepository).save(any(Member.class));
+        RegisterMemberRequest request = getRegisterMemberRequest();
 
-        Member saveMember = memberService.registerNewMember(request);
-        Member getMember = memberService.getMemberById(saveMember.getId());
+        // when
+        Member result = memberService.registerNewMember(request);
 
-        assertEquals(name, getMember.getName());
+        // then
+        assertEquals(member.getName(), result.getName());
     }
 
     @Test
-    @Order(2)
     @DisplayName("전체 회원을 조회할 수 있다.")
     void getAllMemberTest() {
-        List<Member> memberList = memberService.getAllMember();
+        // given
+        List<Member> memberList = getMemberList();
+        doReturn(memberList).when(memberRepository).findAll();
 
-        assertEquals(1, memberList.size());
+        // when
+        List<Member> resultList = memberService.getAllMember();
+
+        // then
+        assertEquals(memberList.size(), resultList.size());
     }
 
     @Test
-    @Order(3)
     @DisplayName("특정 지점의 전체 회원을 조회할 수 있다.")
     void getMemberListByBranchIdTest() {
-        List<Member> memberList = memberService.getMemberListByBranchId(branch.getId());
+        // given
+        List<Member> memberList = getMemberList();
+        doReturn(memberList).when(memberRepository).findAllByBranchId(1L);
 
-        assertEquals(1, memberList.size());
+        // when
+        List<Member> resultList = memberService.getMemberListByBranchId(1L);
+
+        // then
+        assertEquals(memberList.size(), resultList.size());
     }
 
-    private Branch registerBranch(BranchGroup branchGroup) {
-        Branch saveBranch = Branch
-                .builder()
-                .name("Y2GYM 가락점")
-                .phoneNumber("010-0000-0000")
-                .address("서울시 송파구")
-                .branchGroup(branchGroup)
-                .build();
-        return branchRepository.save(saveBranch);
+    private RegisterMemberRequest getRegisterMemberRequest() {
+        return new RegisterMemberRequest
+                (1L, "최이화", "일반회원", "서울시", "010-0000-0000", "qwe", "1234");
     }
 
-    private BranchGroup registerBranchGroup() {
-        BranchGroup branchGroup = new BranchGroup();
-        branchGroup.setName("Y2GYM");
-        return branchGroupRepository.save(branchGroup);
+    private List<Member> getMemberList() {
+        List<Member> memberList = new ArrayList<>();
+
+        for(int i=0; i<5; i++) {
+            Member member = new Member();
+            memberList.add(member);
+        }
+
+        return memberList;
     }
+
 }
