@@ -22,8 +22,8 @@ public class BranchController {
 
     @PostMapping
     private ResponseEntity<Object> registerNewBranch(@RequestBody @Valid RegisterBranchRequest request) {
-        Long id = branchService.registerBranch(request);
-        BranchResult result = BranchResult.builder().id(id).build();
+        Branch branch = branchService.registerBranch(request);
+        BranchResult result = BranchResult.builder().branch(branch).build();
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -46,8 +46,8 @@ public class BranchController {
 
     @PutMapping("/{id}")
     private ResponseEntity<Object> updateBranch(@PathVariable Long id, @RequestBody @Valid UpdateBranchRequest request) {
-        Long result = branchService.updateBranchById(id, request);
-        BranchResult branchResult = BranchResult.builder().id(result).build();
+        Branch branch = branchService.updateBranchById(id, request);
+        BranchResult branchResult = BranchResult.builder().branch(branch).build();
 
         return new ResponseEntity<>(branchResult, HttpStatus.OK);
     }

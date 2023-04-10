@@ -1,94 +1,137 @@
 package com.ffs.domain.branch.service;
 
 import com.ffs.domain.branch.entity.Branch;
+import com.ffs.domain.branch.repository.BranchRepository;
 import com.ffs.domain.branch_group.BranchGroup;
 import com.ffs.web.branch.request.RegisterBranchRequest;
 import com.ffs.web.branch.request.UpdateBranchRequest;
 import com.ffs.domain.branch_group.repository.BranchGroupRepository;
 import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 
-@SpringBootTest
-@TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ExtendWith(MockitoExtension.class)
 class BranchServiceTest {
 
-    @Autowired
-    private BranchService branchService;
+    @InjectMocks
+    BranchService branchService;
 
-    @Autowired
-    private BranchGroupRepository branchGroupRepository;
+    @Mock
+    BranchRepository branchRepository;
 
-    private static Long branchGroupId;
-    private static Long id;
-    private static String name;
+    @Mock
+    BranchGroupRepository branchGroupRepository;
 
-    @BeforeAll
-    void registerBranchGroup() {
-        BranchGroup branchGroup = new BranchGroup();
-        branchGroup.setName("Y2GYM");
-        BranchGroup result = branchGroupRepository.save(branchGroup);
-
-        branchGroupId = result.getId();
-        name = "Y2GYM 가락점";
-    }
-
-    @DisplayName("지점이 등록되어야 한다.")
     @Test
-    @Order(1)
-    void registerBranch() {
-        RegisterBranchRequest request =
-                new RegisterBranchRequest(branchGroupId, name, "가락동", "02-5221-1251");
+    @DisplayName("새로운 지점을 등록할 수 있다.")
+    void registerBranchTest() {
+        // given
+        long branchGroupId = 1;
+        String name = "Y2GYM 가락점";
+        Branch branch = Branch.builder().name(name).build();
 
-        long branchId = branchService.registerBranch(request);
+        doReturn(Optional.of(BranchGroup.builder().build())).when(branchGroupRepository).findById(branchGroupId);
+        doReturn(branch).when(branchRepository).save(any(Branch.class));
 
-        id = branchId;
-        assertEquals(1, branchId);
+        // when
+        RegisterBranchRequest request = getRegisterBranchRequest(branchGroupId, name);
+        Branch result = branchService.registerBranch(request);
+
+        // then
+        assertEquals(request.getName(), result.getName());
     }
 
+    @Test
     @DisplayName("모든 지점이 조회되어야 한다.")
-    @Test
-    @Order(2)
     void getAllBranch() {
-        List<Branch> branchList = branchService.getAllBranch();
+        // given
+        List<Branch> branchList = getBranchList();
+        doReturn(branchList).when(branchRepository).findAll();
 
-        assertEquals(1, branchList.size());
+        // when
+        List<Branch> resultList = branchService.getAllBranch();
+
+        // then
+        assertEquals(branchList.size(), resultList.size());
     }
 
+    @Test
     @DisplayName("브랜치 그룹에 해당하는 모든 지점이 조회되어야 한다.")
-    @Test
-    @Order(3)
     void getAllBranchByGroupId() {
-        List<Branch> branchList = branchService.getAllBranchByBranchGroupId(1L);
-        assertEquals(1, branchList.size());
+        long branchGroupId = 1;
+        // given
+        List<Branch> branchList = getBranchList();
+        doReturn(branchList).when(branchRepository).findAllByBranchGroup(branchGroupId);
+
+        // when
+        List<Branch> resultList = branchService.getAllBranchByBranchGroupId(branchGroupId);
+
+        // then
+        assertEquals(branchList.size(), resultList.size());
     }
 
+    @Test
     @DisplayName("ID에 해당하는 지점이 조회되어야 한다.")
-    @Test
-    @Order(4)
     void getBranchById() {
-        Branch branch = branchService.getBranchById(id);
+       long branchId = 1;
+       // given
+        Branch branch = Branch.builder().name("Y2GYM 가락점").build();
+        doReturn(Optional.of(branch)).when(branchRepository).findById(branchId);
 
-        assertEquals(name, branch.getName());
+        // when
+        Branch result = branchService.getBranchById(branchId);
+
+        // then
+        assertEquals(branch.getName(), result.getName());
     }
 
-    @DisplayName("ID에 해당하는 지점의 정보가 수정되어야 한다.")
     @Test
-    @Order(5)
+    @DisplayName("ID에 해당하는 지점의 정보가 수정되어야 한다.")
     void updateBranchById() {
-        String address = "garak-dong";
-        String phoneNumber = "0000-0000";
-        UpdateBranchRequest request = new UpdateBranchRequest(address, phoneNumber);
-        branchService.updateBranchById(id, request);
+        long branchId = 1;
+        String address = "잠실동";
+        String phoneNumber = "010-2222-2222";
 
-        Branch branch = branchService.getBranchById(id);
-        assertEquals(address, branch.getAddress());
-        assertEquals(phoneNumber, branch.getPhoneNumber());
+        // given
+        Branch branch = Branch.builder().address(address).phoneNumber(phoneNumber).build();
+        doReturn(Optional.of(branch)).when(branchRepository).findById(branchId);
+        doReturn(branch).when(branchRepository).save(any(Branch.class));
+
+
+        // when
+        UpdateBranchRequest request = getUpdateBranchRequest(address, phoneNumber);
+        Branch result = branchService.updateBranchById(branchId, request);
+
+        // then
+        assertEquals(request.getAddress(), result.getAddress());
     }
 
+    private RegisterBranchRequest getRegisterBranchRequest(Long branchGroupId, String name) {
+        return new RegisterBranchRequest(branchGroupId, name, "가락동", "02-5221-1251");
+    }
+
+    private List<Branch> getBranchList() {
+        List<Branch> branchList = new ArrayList<>();
+
+        for(int i=0; i<5; i++) {
+            Branch branch = new Branch();
+            branchList.add(branch);
+        }
+
+        return branchList;
+    }
+
+    private UpdateBranchRequest getUpdateBranchRequest(String address, String phoneNumber) {
+        return new UpdateBranchRequest(address, phoneNumber);
+    }
 }

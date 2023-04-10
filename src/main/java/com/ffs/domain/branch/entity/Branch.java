@@ -4,7 +4,6 @@ import com.ffs.domain.branch_group.BranchGroup;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 

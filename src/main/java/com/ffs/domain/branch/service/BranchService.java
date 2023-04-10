@@ -23,7 +23,7 @@ public class BranchService {
     private final BranchGroupRepository branchGroupRepository;
     private final BranchRepository branchRepository;
 
-    public Long registerBranch(RegisterBranchRequest request) {
+    public Branch registerBranch(RegisterBranchRequest request) {
         log.debug("Register new branch. name={}, groupId={}", request.getName(), request.getGroupId());
 
         Long branchGroupId = request.getGroupId();
@@ -36,10 +36,10 @@ public class BranchService {
         Branch branch = makeNewBranch(request, optionalBranchGroup.get());
         log.trace("Make new branch. name={}", branch.getName());
 
-        branch = branchRepository.save(branch);
-        log.debug("Success to register new branch. id={}", branch.getId());
+        Branch result = branchRepository.save(branch);
+        log.debug("Success to register new branch. id={}, name={}", result.getId(), result.getName());
 
-        return branch.getId();
+        return result;
     }
 
     public List<Branch> getAllBranch() {
@@ -69,7 +69,7 @@ public class BranchService {
         return branch;
     }
 
-    public Long updateBranchById(Long id, UpdateBranchRequest request) {
+    public Branch updateBranchById(Long id, UpdateBranchRequest request) {
         log.debug("Update branch info. id={}", id);
         Optional<Branch> optionalBranch = branchRepository.findById(id);
         if(optionalBranch.isEmpty()) {
@@ -89,8 +89,9 @@ public class BranchService {
         }
 
         branch = branchRepository.save(branch);
+        log.debug("Success to update branch info. id={}", branch.getId());
 
-        return branch.getId();
+        return branch;
     }
 
     public List<Branch> getAllBranchByBranchGroupId(Long branchGroupId) {
