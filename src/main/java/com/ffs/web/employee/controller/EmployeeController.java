@@ -22,8 +22,8 @@ public class EmployeeController {
 
     @PostMapping
     public ResponseEntity<Object> registerNewEmployee(@RequestBody @Valid RegisterEmployeeRequest request) {
-        Long employeeId = employeeService.registerNewEmployee(request);
-        EmployeeResult response = EmployeeResult.builder().id(employeeId).build();
+        Employee employee = employeeService.registerNewEmployee(request);
+        EmployeeResult response = EmployeeResult.builder().employee(employee).build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

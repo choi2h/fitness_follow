@@ -23,7 +23,7 @@ public class EmployeeService {
     private final BranchRepository branchRepository;
     private final EmployeeRepository employeeRepository;
 
-    public Long registerNewEmployee(RegisterEmployeeRequest request) {
+    public Employee registerNewEmployee(RegisterEmployeeRequest request) {
         log.debug("Register new Employee. name={}", request.getName());
 
         Long branchId = request.getBranchId();
@@ -37,7 +37,8 @@ public class EmployeeService {
         Employee employee = makeNewEmployee(request, branch);
         employee = employeeRepository.save(employee);
 
-        return employee.getId();
+        log.debug("Success to register employee. id={}, name={}", employee.getId(), employee.getName());
+        return employee;
     }
 
     public List<Employee> getAllEmployee() {
