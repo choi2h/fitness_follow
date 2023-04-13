@@ -35,7 +35,7 @@ public class LockerService {
     private final BranchRepository branchRepository;
     private final MemberRepository memberRepository;
 
-    public void registerNewLocker(RegisterLockerRequest request) {
+    public List<Locker> registerNewLocker(RegisterLockerRequest request) {
         Long branchId = request.getBranchId();
         int count = request.getCount();
 
@@ -56,7 +56,7 @@ public class LockerService {
             insertLockerList.add(locker);
         }
 
-        lockerRepository.saveAll(insertLockerList);
+        return (List<Locker>) lockerRepository.saveAll(insertLockerList);
     }
 
     public List<Locker> getAllLockerByBranchId(Long branchId) {
