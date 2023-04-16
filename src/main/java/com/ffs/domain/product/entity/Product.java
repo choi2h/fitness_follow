@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @Table(name = "PRODUCT")
 public class Product { //(기본회원권, PT, 이벤트, 사물함, 운동복)
     @Id
-    @Column(name = "ID")
+    @Column(name = "PRODUCT_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
