@@ -31,6 +31,9 @@ public class Employee {
     @Column(name = "ADDRESS")
     private String address;
 
+    @Column(name = "PHONE_NUMBER")
+    private String phoneNumber;
+
     @Column(name = "STATUS")
     private String status;
 
@@ -47,18 +50,18 @@ public class Employee {
     private String passwordSalt;
 
     @Builder
-    public Employee(Branch branch, String name, String responsibility, String address, String status,
+    public Employee(Branch branch, String name, String responsibility, String address, String phoneNumber, String status,
                     String loginId, String password, String passwordType, String passwordSalt) {
         this.branch = branch;
         this.name = name;
         this.responsibility = responsibility;
         this.address = address;
+        this.phoneNumber = phoneNumber;
         this.status = status;
         this.loginId = loginId;
         this.password = password;
         this.passwordType = passwordType;
         this.passwordSalt = passwordSalt;
-
     }
 
 }

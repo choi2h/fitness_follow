@@ -25,6 +25,9 @@ public class RegisterEmployeeRequest {
     private String address;
 
     @NotEmpty
+    private String phoneNumber;
+
+    @NotEmpty
     private String status;
 
     @NotEmpty

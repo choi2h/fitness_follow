@@ -86,6 +86,7 @@ public class EmployeeService {
                 .name(request.getName())
                 .responsibility(request.getResponsibility())
                 .address(request.getAddress())
+                .phoneNumber(request.getPhoneNumber())
                 .status(request.getStatus())
                 .loginId(request.getLoginId())
                 .password(request.getPassword())
