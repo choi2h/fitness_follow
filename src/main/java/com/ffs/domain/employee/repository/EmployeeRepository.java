@@ -1,6 +1,6 @@
 package com.ffs.domain.employee.repository;
 
-import com.ffs.domain.employee.Employee;
+import com.ffs.domain.employee.employee.Employee;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 

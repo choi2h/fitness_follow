@@ -11,7 +11,8 @@ public enum EmployeeResultCode implements ResultCode<String> {
     FAIL(DefaultResultCode.FAILED),
     NO_REGISTERED_EMPLOYEE("E001", "등록되어 있는 직원이 없습니다.", HttpStatus.NOT_FOUND),
     NOT_EXIST_EMPLOYEE("E002", "존재하는 않는 직원입니다.", HttpStatus.NOT_FOUND),
-    NOT_EXIST_EMPLOYEE_FOR_BRANCH("E003", "해당 지점에 근무하는 직원 정보가 없습니다.", HttpStatus.NOT_FOUND)
+    NOT_EXIST_EMPLOYEE_FOR_BRANCH("E003", "해당 지점에 근무하는 직원 정보가 없습니다.", HttpStatus.NOT_FOUND),
+    INVALID_VALUE("E004", "잘못된 요청입니다.", HttpStatus.BAD_REQUEST)
     ;
 
     @Getter

@@ -1,9 +1,7 @@
-package com.ffs.domain.employee;
+package com.ffs.domain.employee.employee;
 
 import com.ffs.domain.branch.entity.Branch;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,6 +10,45 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Table(name = "EMPLOYEE")
 public class Employee {
+
+    /**
+     * 재직상태
+     */
+    @Getter
+    @AllArgsConstructor
+    public enum Status {
+        RESIGN("퇴사"),
+        EMPLOYED("재직중");
+
+        private String name;
+
+        public static Status getStatusByName(String name) {
+            Status result = null;
+
+            for(Status status : Employee.Status.values()) {
+                if(name.equals(status.getName())){
+                    result = status;
+                    break;
+                }
+            }
+
+            return result;
+        }
+    }
+
+
+    /**
+     * 직책
+     */
+    @Getter
+    @RequiredArgsConstructor
+    public enum Responsibility {
+        CEO("대표"),
+        MANAGER("매니저"),
+        TRAINER("트레이너");
+
+        private final String text;
+    }
 
     @Id
     @Column(name = "EMPLOYEE_ID")
@@ -62,6 +99,10 @@ public class Employee {
         this.password = password;
         this.passwordType = passwordType;
         this.passwordSalt = passwordSalt;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status.getName();
     }
 
 }

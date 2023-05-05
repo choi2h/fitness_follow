@@ -2,12 +2,14 @@ package com.ffs.domain.employee.service;
 
 import com.ffs.common.exception.ServiceResultCodeException;
 import com.ffs.domain.branch.entity.Branch;
-import com.ffs.domain.employee.Employee;
+import com.ffs.domain.employee.EmployeeInfo;
+import com.ffs.domain.employee.employee.Employee;
 import com.ffs.web.employee.request.RegisterEmployeeRequest;
 import com.ffs.domain.branch.repository.BranchRepository;
 import com.ffs.domain.employee.repository.EmployeeRepository;
 import com.ffs.domain.branch.BranchResultCode;
 import com.ffs.domain.employee.EmployeeResultCode;
+import com.ffs.web.employee.request.UpdateEmployeeStatusRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,8 +24,14 @@ public class EmployeeService {
 
     private final BranchRepository branchRepository;
     private final EmployeeRepository employeeRepository;
+    private final EmployeeMapperService employeeMapperService;
 
-    public Employee registerNewEmployee(RegisterEmployeeRequest request) {
+    /**
+     * 신규 직원 등록
+     * @param request
+     * @return
+     */
+    public EmployeeInfo registerNewEmployee(RegisterEmployeeRequest request) {
         log.debug("Register new Employee. name={}", request.getName());
 
         Long branchId = request.getBranchId();
@@ -34,24 +42,33 @@ public class EmployeeService {
         }
 
         Branch branch = optionalBranch.get();
-        Employee employee = makeNewEmployee(request, branch);
+        Employee employee = employeeMapperService.makeNewEmployee(request, branch);
         employee = employeeRepository.save(employee);
 
         log.debug("Success to register employee. id={}, name={}", employee.getId(), employee.getName());
-        return employee;
+        return employeeMapperService.employeeToEmployeeInfo(employee);
     }
 
-    public List<Employee> getAllEmployee() {
+    /**
+     * 전체 직원 조회
+     * @return
+     */
+    public List<EmployeeInfo> getAllEmployee() {
         List<Employee> employeeList = employeeRepository.findAll();
         if(employeeList.isEmpty()) {
             log.debug("Not exist employee anyone.");
             throw new ServiceResultCodeException(EmployeeResultCode.NO_REGISTERED_EMPLOYEE);
         }
 
-        return employeeList;
+        return employeeMapperService.employeeListToEmployeeInfoList(employeeList);
     }
 
-    public Employee getEmployeeById(Long id) {
+    /**
+     * 직원ID로 특정 직원 조회 *
+     * @param id
+     * @return
+     */
+    public EmployeeInfo getEmployeeById(Long id) {
         log.debug("Search employee by id. id={}", id);
 
         Optional<Employee> optionalEmployee = employeeRepository.findById(id);
@@ -63,10 +80,15 @@ public class EmployeeService {
         Employee employee = optionalEmployee.get();
         log.debug("Found employee by id. id={}, name={}", id, employee.getName());
 
-        return employee;
+        return employeeMapperService.employeeToEmployeeInfo(employee);
     }
 
-    public List<Employee> getEmployeeByBranchId(Long branchId) {
+    /**
+     * 특정 지점의 직원 리스트 조회
+     * @param branchId
+     * @return
+     */
+    public List<EmployeeInfo> getEmployeeByBranchId(Long branchId) {
         log.debug("Search employee list by branch id. branchId={}", branchId);
 
         List<Employee> employeeList = employeeRepository.findAllByBranchId(branchId);
@@ -76,20 +98,36 @@ public class EmployeeService {
         }
 
         log.debug("Found employee list by branch id. count={}", employeeList.size());
-        return employeeList;
+        return employeeMapperService.employeeListToEmployeeInfoList(employeeList);
     }
 
-    private Employee makeNewEmployee(RegisterEmployeeRequest request, Branch branch) {
-        return Employee
-                .builder()
-                .branch(branch)
-                .name(request.getName())
-                .responsibility(request.getResponsibility())
-                .address(request.getAddress())
-                .phoneNumber(request.getPhoneNumber())
-                .status(request.getStatus())
-                .loginId(request.getLoginId())
-                .password(request.getPassword())
-                .build();
+    //TODO 직원은 개인정보를 변경할 수 있다.
+
+
+    /**
+     * 직원 상태(재직중/퇴사) 변경
+     * @param employeeId
+     * @param request
+     * @return
+     */
+    public EmployeeInfo updateEmployeeStatus(Long employeeId, UpdateEmployeeStatusRequest request) {
+        String status = request.getStatus();
+        Employee.Status newStatus = Employee.Status.getStatusByName(status);
+        if(newStatus == null) {
+            log.debug("Invalid status value. status={}", status);
+            throw new ServiceResultCodeException(EmployeeResultCode.INVALID_VALUE);
+        }
+
+        Optional<Employee> optionalEmployee = employeeRepository.findById(employeeId);
+        if(optionalEmployee.isEmpty()) {
+            log.debug("Not exist employee for update employee status. employeeId={}", employeeId);
+            throw new ServiceResultCodeException(EmployeeResultCode.NOT_EXIST_EMPLOYEE);
+        }
+
+        Employee employee = optionalEmployee.get();
+        employee.setStatus(newStatus);
+        employee = employeeRepository.save(employee);
+
+        return employeeMapperService.employeeToEmployeeInfo(employee);
     }
 }

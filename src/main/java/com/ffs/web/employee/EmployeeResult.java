@@ -2,7 +2,8 @@ package com.ffs.web.employee;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ffs.common.AbstractResponse;
-import com.ffs.domain.employee.Employee;
+import com.ffs.domain.employee.EmployeeInfo;
+import com.ffs.domain.employee.employee.Employee;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -17,7 +18,7 @@ public class EmployeeResult extends AbstractResponse {
 
     private Long id;
 
-    private Employee employee;
+    private EmployeeInfo employee;
 
-    private List<Employee> employeeList;
+    private List<EmployeeInfo> employeeList;
 }
