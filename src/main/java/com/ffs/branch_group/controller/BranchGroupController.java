@@ -24,19 +24,13 @@ public class BranchGroupController {
     public ResponseEntity<Object> registerNewBranchGroup(@RequestBody @Valid RegisterBranchGroupRequest request) {
         BranchGroup branchGroup = branchGroupService.registerNewBranchGroup(request);
         BranchGroupResult response = BranchGroupResult.builder().branchGroup(branchGroup).build();
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<Object> getAllBranchGroup() {
-        List<BranchGroup> branchGroups;
-
-        try {
-            branchGroups = branchGroupService.getAllBranchGroup();
-        } catch (ServiceResultCodeException e) {
-            throw e;
-        }
-
+        List<BranchGroup> branchGroups = branchGroupService.getAllBranchGroup();
         BranchGroupResult response = BranchGroupResult.builder().branchGroupList(branchGroups).build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -44,14 +38,7 @@ public class BranchGroupController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getBranchById(@PathVariable Long id) {
-        BranchGroup branchGroup;
-
-        try {
-            branchGroup = branchGroupService.getBranchGroup(id);
-        } catch (ServiceResultCodeException e) {
-            throw e;
-        }
-
+        BranchGroup branchGroup = branchGroupService.getBranchGroup(id);
         BranchGroupResult response = BranchGroupResult.builder().branchGroup(branchGroup).build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);

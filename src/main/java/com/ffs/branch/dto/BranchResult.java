@@ -2,7 +2,6 @@ package com.ffs.branch.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ffs.common.AbstractResponse;
-import com.ffs.branch.domain.Branch;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -18,7 +17,7 @@ public class BranchResult extends AbstractResponse {
 
     private Long id;
 
-    private Branch branch;
+    private BranchInfo branch;
 
-    private List<Branch> branchList;
+    private List<BranchInfo> branchList;
 }

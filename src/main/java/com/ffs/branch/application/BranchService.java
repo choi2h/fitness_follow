@@ -1,5 +1,6 @@
 package com.ffs.branch.application;
 
+import com.ffs.branch.dto.BranchInfo;
 import com.ffs.common.exception.ServiceResultCodeException;
 import com.ffs.branch.domain.Branch;
 import com.ffs.branch_group.domain.BranchGroup;
@@ -22,14 +23,15 @@ public class BranchService {
 
     private final BranchGroupRepository branchGroupRepository;
     private final BranchRepository branchRepository;
+    private final BranchInfoMapper branchInfoMapper;
 
-    public Branch registerBranch(RegisterBranchRequest request) {
+    public BranchInfo registerBranch(RegisterBranchRequest request) {
         log.debug("Register new branch. name={}, groupId={}", request.getName(), request.getGroupId());
 
         Long branchGroupId = request.getGroupId();
         Optional<BranchGroup> optionalBranchGroup = branchGroupRepository.findById(branchGroupId);
         if(optionalBranchGroup.isEmpty()) {
-            log.debug("Not exist branch from id. id={}", branchGroupId);
+            log.info("Not exist branch from id. id={}", branchGroupId);
             throw new ServiceResultCodeException(BranchResultCode.NOT_EXIST_BRANCH_GROUP, branchGroupId);
         }
 
@@ -37,42 +39,43 @@ public class BranchService {
         log.trace("Make new branch. name={}", branch.getName());
 
         Branch result = branchRepository.save(branch);
-        log.debug("Success to register new branch. id={}, name={}", result.getId(), result.getName());
+        log.info("Success to register new branch. id={}, name={}", result.getId(), result.getName());
 
-        return result;
+        return branchInfoMapper.convertBranchToBranchInfo(branch);
     }
 
-    public List<Branch> getAllBranch() {
+    public List<BranchInfo> getAllBranch() {
         log.debug("Search all branch.");
 
         List<Branch> branchList = branchRepository.findAll();
         if(branchList.isEmpty()) {
-            log.debug("Not exist branch anyone.");
+            log.info("Not exist branch anyone.");
             throw new ServiceResultCodeException(BranchResultCode.NOT_REGISTERED_BRANCH);
         }
 
-        log.debug("Found all branch. count={}", branchList.size());
-        return branchList;
+        log.info("Found all branch. count={}", branchList.size());
+        return branchInfoMapper.convertBranchListToBranchInfoList(branchList);
     }
 
-    public Branch getBranchById(Long id) {
+    public BranchInfo getBranchById(Long id) {
         log.debug("Search branch by id. id={}", id);
 
         Optional<Branch> optionalBranch = branchRepository.findById(id);
         if(optionalBranch.isEmpty()) {
-            log.debug("Not exist branch from id. id={}", id);
+            log.info("Not exist branch from id. id={}", id);
             throw new ServiceResultCodeException(BranchResultCode.NOT_EXIST_BRANCH, id);
         }
 
         Branch branch = optionalBranch.get();
-        log.debug("Found branch by id. id={}, name={}", id, branch.getName());
-        return branch;
+        log.info("Found branch by id. id={}, name={}", id, branch.getName());
+        return branchInfoMapper.convertBranchToBranchInfo(branch);
     }
 
-    public Branch updateBranchById(Long id, UpdateBranchRequest request) {
+    public BranchInfo updateBranchById(Long id, UpdateBranchRequest request) {
         log.debug("Update branch info. id={}", id);
         Optional<Branch> optionalBranch = branchRepository.findById(id);
         if(optionalBranch.isEmpty()) {
+            log.info("Not exist branch from id. id={}", id);
             throw new ServiceResultCodeException(BranchResultCode.NOT_EXIST_BRANCH, id);
         }
 
@@ -87,21 +90,22 @@ public class BranchService {
 
         branch.updateBranchInfo(address, phoneNumber);
         branch = branchRepository.save(branch);
-        log.debug("Success to update branch info. id={}", branch.getId());
+        log.info("Success to update branch info. id={}", branch.getId());
 
-        return branch;
+        return branchInfoMapper.convertBranchToBranchInfo(branch);
     }
 
-    public List<Branch> getAllBranchByBranchGroupId(Long branchGroupId) {
+    public List<BranchInfo> getAllBranchByBranchGroupId(Long branchGroupId) {
         log.debug("Search all branch by branch group id. branchGroupId={}", branchGroupId);
+
         List<Branch> branchList = branchRepository.findAllByBranchGroup(branchGroupId);
         if(branchList.isEmpty()) {
-            log.debug("Nothing registered branch by branch group id. branchGroupId={}", branchGroupId);
+            log.info("Nothing registered branch by branch group id. branchGroupId={}", branchGroupId);
             throw new ServiceResultCodeException(BranchResultCode.NOT_REGISTERED_BRANCH);
         }
 
-        log.debug("Found branch by branch group id. branchGroupId={}, count={}", branchGroupId, branchList.size());
-        return branchList;
+        log.info("Found branch by branch group id. branchGroupId={}, count={}", branchGroupId, branchList.size());
+        return branchInfoMapper.convertBranchListToBranchInfoList(branchList);
     }
 
     private Branch makeNewBranch(RegisterBranchRequest request, BranchGroup branchGroup) {

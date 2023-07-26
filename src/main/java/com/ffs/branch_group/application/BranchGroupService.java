@@ -22,11 +22,11 @@ public class BranchGroupService {
     public BranchGroup registerNewBranchGroup(RegisterBranchGroupRequest registerRequest) {
         log.debug("Register new branch group. name={}", registerRequest.getName());
 
-        BranchGroup branchGroup = makeBranchGroup(registerRequest);
+        BranchGroup branchGroup = makeNewBranchGroup(registerRequest);
         log.trace("Make new branch group. branchGroup={}", branchGroup);
 
         branchGroup = branchGroupRepository.save(branchGroup);
-        log.debug("Success to register branch group. id={}", branchGroup.getId());
+        log.info("Success to register branch group. id={}", branchGroup.getId());
 
         return branchGroup;
     }
@@ -36,11 +36,11 @@ public class BranchGroupService {
         List<BranchGroup> branchGroupList = branchGroupRepository.findAll();
 
         if(branchGroupList.isEmpty()) {
-            log.debug("Not exist branch group anyone.");
+            log.info("Not exist branch group anyone.");
             throw new ServiceResultCodeException(BranchResultCode.NO_REGISTERED_GROUPS);
         }
 
-        log.debug("Found all branch group. count={}", branchGroupList.size());
+        log.info("Found all branch group. count={}", branchGroupList.size());
         return branchGroupList;
     }
 
@@ -49,17 +49,17 @@ public class BranchGroupService {
         Optional<BranchGroup> optionalBranchGroup = branchGroupRepository.findById(id);
 
         if(optionalBranchGroup.isEmpty()) {
-            log.debug("Not exist branch group. id={}", id);
+            log.info("Not exist branch group. id={}", id);
             throw new ServiceResultCodeException(BranchResultCode.NOT_EXIST_BRANCH_GROUP, id);
         }
 
         BranchGroup branchGroup = optionalBranchGroup.get();
-        log.debug("Found branch group from id. id={}, name={}", id, branchGroup.getName());
+        log.info("Found branch group from id. id={}, name={}", id, branchGroup.getName());
 
         return branchGroup;
     }
 
-    private BranchGroup makeBranchGroup(RegisterBranchGroupRequest request) {
+    private BranchGroup makeNewBranchGroup(RegisterBranchGroupRequest request) {
         String name = request.getName();
         return BranchGroup.builder().name(name).build();
     }

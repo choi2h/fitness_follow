@@ -3,6 +3,7 @@ package com.ffs.branch.service;
 import com.ffs.branch.application.BranchService;
 import com.ffs.branch.domain.Branch;
 import com.ffs.branch.domain.repository.BranchRepository;
+import com.ffs.branch.dto.BranchInfo;
 import com.ffs.branch_group.domain.BranchGroup;
 import com.ffs.branch.dto.RegisterBranchRequest;
 import com.ffs.branch.dto.UpdateBranchRequest;
@@ -46,7 +47,7 @@ class BranchServiceTest {
 
         // when
         RegisterBranchRequest request = getRegisterBranchRequest(branchGroupId, name);
-        Branch result = branchService.registerBranch(request);
+        BranchInfo result = branchService.registerBranch(request);
 
         // then
         assertEquals(request.getName(), result.getName());
@@ -60,7 +61,7 @@ class BranchServiceTest {
         doReturn(branchList).when(branchRepository).findAll();
 
         // when
-        List<Branch> resultList = branchService.getAllBranch();
+        List<BranchInfo> resultList = branchService.getAllBranch();
 
         // then
         assertEquals(branchList.size(), resultList.size());
@@ -75,7 +76,7 @@ class BranchServiceTest {
         doReturn(branchList).when(branchRepository).findAllByBranchGroup(branchGroupId);
 
         // when
-        List<Branch> resultList = branchService.getAllBranchByBranchGroupId(branchGroupId);
+        List<BranchInfo> resultList = branchService.getAllBranchByBranchGroupId(branchGroupId);
 
         // then
         assertEquals(branchList.size(), resultList.size());
@@ -90,7 +91,7 @@ class BranchServiceTest {
         doReturn(Optional.of(branch)).when(branchRepository).findById(branchId);
 
         // when
-        Branch result = branchService.getBranchById(branchId);
+        BranchInfo result = branchService.getBranchById(branchId);
 
         // then
         assertEquals(branch.getName(), result.getName());
@@ -111,7 +112,7 @@ class BranchServiceTest {
 
         // when
         UpdateBranchRequest request = getUpdateBranchRequest(address, phoneNumber);
-        Branch result = branchService.updateBranchById(branchId, request);
+        BranchInfo result = branchService.updateBranchById(branchId, request);
 
         // then
         assertEquals(request.getAddress(), result.getAddress());

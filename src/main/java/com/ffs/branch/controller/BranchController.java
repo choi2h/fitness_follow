@@ -1,7 +1,7 @@
 package com.ffs.branch.controller;
 
 import com.ffs.branch.application.BranchService;
-import com.ffs.branch.domain.Branch;
+import com.ffs.branch.dto.BranchInfo;
 import com.ffs.branch.dto.BranchResult;
 import com.ffs.branch.dto.RegisterBranchRequest;
 import com.ffs.branch.dto.UpdateBranchRequest;
@@ -22,40 +22,40 @@ public class BranchController {
 
     @PostMapping
     private ResponseEntity<Object> registerNewBranch(@RequestBody @Valid RegisterBranchRequest request) {
-        Branch branch = branchService.registerBranch(request);
-        BranchResult result = BranchResult.builder().branch(branch).build();
+        BranchInfo branchInfo = branchService.registerBranch(request);
+        BranchResult result = BranchResult.builder().branch(branchInfo).build();
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping
-    private ResponseEntity<Object> getAllBranch() {
-        List<Branch> branchList = branchService.getAllBranch();
-        BranchResult result = BranchResult.builder().branchList(branchList).build();
+    @GetMapping("/all")
+    private ResponseEntity<Object> findAllBranch() {
+        List<BranchInfo> branchInfoList = branchService.getAllBranch();
+        BranchResult result = BranchResult.builder().branchList(branchInfoList).build();
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    private ResponseEntity<Object> getBranchById(@PathVariable Long id) {
-        Branch branch = branchService.getBranchById(id);
-        BranchResult result = BranchResult.builder().branch(branch).build();
+    private ResponseEntity<Object> findBranchById(@PathVariable Long id) {
+        BranchInfo branchInfo = branchService.getBranchById(id);
+        BranchResult result = BranchResult.builder().id(id).branch(branchInfo).build();
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    private ResponseEntity<Object> updateBranch(@PathVariable Long id, @RequestBody @Valid UpdateBranchRequest request) {
-        Branch branch = branchService.updateBranchById(id, request);
-        BranchResult branchResult = BranchResult.builder().branch(branch).build();
+    private ResponseEntity<Object> updateBranchInfo(@PathVariable Long id, @RequestBody @Valid UpdateBranchRequest request) {
+        BranchInfo branchInfo = branchService.updateBranchById(id, request);
+        BranchResult branchResult = BranchResult.builder().id(id).branch(branchInfo).build();
 
         return new ResponseEntity<>(branchResult, HttpStatus.OK);
     }
 
     @GetMapping("/all/{id}")
-    public ResponseEntity<Object> getBranchListByGroupId(@PathVariable Long id) {
-        List<Branch> branchList = branchService.getAllBranchByBranchGroupId(id);
-        BranchResult result = BranchResult.builder().branchList(branchList).build();
+    public ResponseEntity<Object> findBranchListByGroupId(@PathVariable Long id) {
+        List<BranchInfo> branchInfoList = branchService.getAllBranchByBranchGroupId(id);
+        BranchResult result = BranchResult.builder().branchList(branchInfoList).build();
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
