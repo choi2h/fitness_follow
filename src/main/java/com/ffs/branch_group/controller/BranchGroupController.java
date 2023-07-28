@@ -1,7 +1,6 @@
 package com.ffs.branch_group.controller;
 
-import com.ffs.common.exception.ServiceResultCodeException;
-import com.ffs.branch_group.domain.BranchGroup;
+import com.ffs.branch_group.dto.BranchGroupInfo;
 import com.ffs.branch_group.dto.RegisterBranchGroupRequest;
 import com.ffs.branch_group.dto.BranchGroupResult;
 import com.ffs.branch_group.application.BranchGroupService;
@@ -22,24 +21,24 @@ public class BranchGroupController {
 
     @PostMapping
     public ResponseEntity<Object> registerNewBranchGroup(@RequestBody @Valid RegisterBranchGroupRequest request) {
-        BranchGroup branchGroup = branchGroupService.registerNewBranchGroup(request);
-        BranchGroupResult response = BranchGroupResult.builder().branchGroup(branchGroup).build();
+        BranchGroupInfo branchGroupInfo = branchGroupService.registerNewBranchGroup(request);
+        BranchGroupResult response = BranchGroupResult.builder().branchGroup(branchGroupInfo).build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<Object> getAllBranchGroup() {
-        List<BranchGroup> branchGroups = branchGroupService.getAllBranchGroup();
-        BranchGroupResult response = BranchGroupResult.builder().branchGroupList(branchGroups).build();
+        List<BranchGroupInfo> branchGroupInfoList = branchGroupService.getAllBranchGroup();
+        BranchGroupResult response = BranchGroupResult.builder().branchGroupList(branchGroupInfoList).build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getBranchById(@PathVariable Long id) {
-        BranchGroup branchGroup = branchGroupService.getBranchGroup(id);
-        BranchGroupResult response = BranchGroupResult.builder().branchGroup(branchGroup).build();
+        BranchGroupInfo branchGroupInfo = branchGroupService.getBranchGroup(id);
+        BranchGroupResult response = BranchGroupResult.builder().branchGroup(branchGroupInfo).build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

@@ -1,5 +1,6 @@
 package com.ffs.branch_group.application;
 
+import com.ffs.branch_group.dto.BranchGroupInfo;
 import com.ffs.common.exception.ServiceResultCodeException;
 import com.ffs.branch_group.domain.BranchGroup;
 import com.ffs.branch_group.dto.RegisterBranchGroupRequest;
@@ -18,8 +19,9 @@ import java.util.Optional;
 public class BranchGroupService {
 
     private final BranchGroupRepository branchGroupRepository;
+    private final BranchGroupInfoMapper branchGroupInfoMapper;
 
-    public BranchGroup registerNewBranchGroup(RegisterBranchGroupRequest registerRequest) {
+    public BranchGroupInfo registerNewBranchGroup(RegisterBranchGroupRequest registerRequest) {
         log.debug("Register new branch group. name={}", registerRequest.getName());
 
         BranchGroup branchGroup = makeNewBranchGroup(registerRequest);
@@ -28,10 +30,10 @@ public class BranchGroupService {
         branchGroup = branchGroupRepository.save(branchGroup);
         log.info("Success to register branch group. id={}", branchGroup.getId());
 
-        return branchGroup;
+        return branchGroupInfoMapper.convertBranchGroupToBranchGroupInfo(branchGroup);
     }
 
-    public List<BranchGroup> getAllBranchGroup() {
+    public List<BranchGroupInfo> getAllBranchGroup() {
         log.debug("Select all branch group.");
         List<BranchGroup> branchGroupList = branchGroupRepository.findAll();
 
@@ -41,10 +43,10 @@ public class BranchGroupService {
         }
 
         log.info("Found all branch group. count={}", branchGroupList.size());
-        return branchGroupList;
+        return branchGroupInfoMapper.convertBranchGroupListToBranchGroupInfoList(branchGroupList);
     }
 
-    public BranchGroup getBranchGroup(Long id) {
+    public BranchGroupInfo getBranchGroup(Long id) {
         log.debug("Select branch group by id. id={}", id);
         Optional<BranchGroup> optionalBranchGroup = branchGroupRepository.findById(id);
 
@@ -56,7 +58,7 @@ public class BranchGroupService {
         BranchGroup branchGroup = optionalBranchGroup.get();
         log.info("Found branch group from id. id={}, name={}", id, branchGroup.getName());
 
-        return branchGroup;
+        return branchGroupInfoMapper.convertBranchGroupToBranchGroupInfo(branchGroup);
     }
 
     private BranchGroup makeNewBranchGroup(RegisterBranchGroupRequest request) {
