@@ -9,8 +9,12 @@ import javax.validation.constraints.NotEmpty;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateEmployeeStatusRequest {
+public class UpdateEmployeeRequest {
 
     @NotEmpty
-    private String status;
+    private String address;
+
+    @NotEmpty
+    private String phoneNumber;
+
 }

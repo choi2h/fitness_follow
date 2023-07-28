@@ -1,9 +1,8 @@
-package com.ffs.employee.service;
+package com.ffs.employee.application;
 
 import com.ffs.branch.domain.Branch;
 import com.ffs.branch.domain.repository.BranchRepository;
-import com.ffs.employee.application.EmployeeMapperService;
-import com.ffs.employee.application.EmployeeService;
+import com.ffs.employee.domain.EmployeeStatus;
 import com.ffs.employee.dto.EmployeeInfo;
 import com.ffs.employee.domain.Employee;
 import com.ffs.employee.domain.repository.EmployeeRepository;
@@ -38,7 +37,7 @@ class EmployeeServiceTest {
     private BranchRepository branchRepository;
 
     @Spy
-    private EmployeeMapperService employeeMapperService;
+    private EmployeeInfoMapper employeeMapperService;
 
 
     @Test
@@ -100,7 +99,7 @@ class EmployeeServiceTest {
         //given
         Employee employee = getEmployee("최이화");
         doReturn(Optional.of(employee)).when(employeeRepository).findById(employeeId);
-        employee.setStatus(Employee.Status.RESIGN);
+        employee.changeStatus(EmployeeStatus.RESIGN);
         doReturn(employee).when(employeeRepository).save(employee);
 
         //when
@@ -122,7 +121,7 @@ class EmployeeServiceTest {
         return Employee
                 .builder()
                 .branch(getBranch())
-                .status(Employee.Status.EMPLOYED.getName())
+                .status(EmployeeStatus.EMPLOYED.getName())
                 .name(name)
                 .address("")
                 .phoneNumber("")

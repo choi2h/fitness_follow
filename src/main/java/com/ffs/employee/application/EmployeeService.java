@@ -2,6 +2,7 @@ package com.ffs.employee.application;
 
 import com.ffs.common.exception.ServiceResultCodeException;
 import com.ffs.branch.domain.Branch;
+import com.ffs.employee.domain.EmployeeStatus;
 import com.ffs.employee.dto.EmployeeInfo;
 import com.ffs.employee.domain.Employee;
 import com.ffs.employee.dto.RegisterEmployeeRequest;
@@ -9,6 +10,7 @@ import com.ffs.branch.domain.repository.BranchRepository;
 import com.ffs.employee.domain.repository.EmployeeRepository;
 import com.ffs.branch.BranchResultCode;
 import com.ffs.employee.EmployeeResultCode;
+import com.ffs.employee.dto.UpdateEmployeeRequest;
 import com.ffs.employee.dto.UpdateEmployeeStatusRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,15 +26,10 @@ public class EmployeeService {
 
     private final BranchRepository branchRepository;
     private final EmployeeRepository employeeRepository;
-    private final EmployeeMapperService employeeMapperService;
+    private final EmployeeInfoMapper employeeMapperService;
 
-    /**
-     * 신규 직원 등록
-     * @param request
-     * @return
-     */
     public EmployeeInfo registerNewEmployee(RegisterEmployeeRequest request) {
-        log.debug("Register new Employee. name={}", request.getName());
+        log.debug("Register new Employee start. name={}", request.getName());
 
         Long branchId = request.getBranchId();
         Optional<Branch> optionalBranch = branchRepository.findById(branchId);
@@ -42,52 +39,34 @@ public class EmployeeService {
         }
 
         Branch branch = optionalBranch.get();
-        Employee employee = employeeMapperService.makeNewEmployee(request, branch);
+        Employee employee = makeNewEmployee(request, branch);
         employee = employeeRepository.save(employee);
 
-        log.debug("Success to register employee. id={}, name={}", employee.getId(), employee.getName());
+        log.info("Success to register employee. id={}, name={}", employee.getId(), employee.getName());
         return employeeMapperService.employeeToEmployeeInfo(employee);
     }
 
-    /**
-     * 전체 직원 조회
-     * @return
-     */
     public List<EmployeeInfo> getAllEmployee() {
         List<Employee> employeeList = employeeRepository.findAll();
+
         if(employeeList.isEmpty()) {
             log.debug("Not exist employee anyone.");
             throw new ServiceResultCodeException(EmployeeResultCode.NO_REGISTERED_EMPLOYEE);
         }
 
+        log.info("Found all employee. count={}", employeeList.size());
         return employeeMapperService.employeeListToEmployeeInfoList(employeeList);
     }
 
-    /**
-     * 직원ID로 특정 직원 조회 *
-     * @param id
-     * @return
-     */
     public EmployeeInfo getEmployeeById(Long id) {
         log.debug("Search employee by id. id={}", id);
 
-        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
-        if(optionalEmployee.isEmpty()) {
-            log.debug("Not exist employee from id. id={}", id);
-            throw new ServiceResultCodeException(EmployeeResultCode.NOT_EXIST_EMPLOYEE, id);
-        }
-
-        Employee employee = optionalEmployee.get();
+        Employee employee = findEmployeeById(id);
         log.debug("Found employee by id. id={}, name={}", id, employee.getName());
 
         return employeeMapperService.employeeToEmployeeInfo(employee);
     }
 
-    /**
-     * 특정 지점의 직원 리스트 조회
-     * @param branchId
-     * @return
-     */
     public List<EmployeeInfo> getEmployeeByBranchId(Long branchId) {
         log.debug("Search employee list by branch id. branchId={}", branchId);
 
@@ -101,33 +80,58 @@ public class EmployeeService {
         return employeeMapperService.employeeListToEmployeeInfoList(employeeList);
     }
 
-    //TODO 직원은 개인정보를 변경할 수 있다.
+    public EmployeeInfo updateEmployeeInfo(Long employeeId, UpdateEmployeeRequest request) {
+        log.debug("Update employee info. employeeId={}", employeeId);
 
+        Employee employee = findEmployeeById(employeeId);
 
-    /**
-     * 직원 상태(재직중/퇴사) 변경
-     * @param employeeId
-     * @param request
-     * @return
-     */
+        String address = request.getAddress();
+        String phoneNumber = request.getPhoneNumber();
+        employee.update(address, phoneNumber);
+
+        log.info("Update employee info. employeeId={}", employeeId);
+        return employeeMapperService.employeeToEmployeeInfo(employee);
+    }
+
     public EmployeeInfo updateEmployeeStatus(Long employeeId, UpdateEmployeeStatusRequest request) {
+        log.debug("Update employeeStatus start. employeeId={}, status={}", employeeId, request.getStatus());
+
         String status = request.getStatus();
-        Employee.Status newStatus = Employee.Status.getStatusByName(status);
+        EmployeeStatus newStatus = EmployeeStatus.getStatusByName(status);
         if(newStatus == null) {
-            log.debug("Invalid status value. status={}", status);
+            log.info("Invalid status value. status={}", status);
             throw new ServiceResultCodeException(EmployeeResultCode.INVALID_VALUE);
         }
 
+        Employee employee = findEmployeeById(employeeId);
+        employee.changeStatus(newStatus);
+        employee = employeeRepository.save(employee);
+
+        log.info("Success to update employee status. employeeId={}, status={}", employeeId, status);
+        return employeeMapperService.employeeToEmployeeInfo(employee);
+    }
+
+    protected Employee makeNewEmployee(RegisterEmployeeRequest request, Branch branch) {
+        return Employee
+                .builder()
+                .branch(branch)
+                .name(request.getName())
+                .responsibility(request.getResponsibility())
+                .address(request.getAddress())
+                .phoneNumber(request.getPhoneNumber())
+                .status(request.getStatus())
+                .loginId(request.getLoginId())
+                .password(request.getPassword())
+                .build();
+    }
+
+    private Employee findEmployeeById(Long employeeId) {
         Optional<Employee> optionalEmployee = employeeRepository.findById(employeeId);
         if(optionalEmployee.isEmpty()) {
-            log.debug("Not exist employee for update employee status. employeeId={}", employeeId);
+            log.info("Not exist employee by id. employeeId={}", employeeId);
             throw new ServiceResultCodeException(EmployeeResultCode.NOT_EXIST_EMPLOYEE);
         }
 
-        Employee employee = optionalEmployee.get();
-        employee.setStatus(newStatus);
-        employee = employeeRepository.save(employee);
-
-        return employeeMapperService.employeeToEmployeeInfo(employee);
+        return optionalEmployee.get();
     }
 }
