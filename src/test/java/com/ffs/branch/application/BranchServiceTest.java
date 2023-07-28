@@ -1,6 +1,5 @@
-package com.ffs.branch.service;
+package com.ffs.branch.application;
 
-import com.ffs.branch.application.BranchService;
 import com.ffs.branch.domain.Branch;
 import com.ffs.branch.domain.repository.BranchRepository;
 import com.ffs.branch.dto.BranchInfo;
@@ -12,7 +11,9 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,9 @@ class BranchServiceTest {
 
     @Mock
     BranchGroupRepository branchGroupRepository;
+
+    @Spy
+    BranchInfoMapper branchInfoMapper;
 
     @Test
     @DisplayName("새로운 지점을 등록할 수 있다.")
@@ -124,9 +128,10 @@ class BranchServiceTest {
 
     private List<Branch> getBranchList() {
         List<Branch> branchList = new ArrayList<>();
+        BranchGroup branchGroup = BranchGroup.builder().build();
 
         for(int i=0; i<5; i++) {
-            Branch branch = new Branch();
+            Branch branch = Branch.builder().branchGroup(branchGroup).build();
             branchList.add(branch);
         }
 
