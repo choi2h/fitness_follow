@@ -11,45 +11,6 @@ import javax.persistence.*;
 @Table(name = "EMPLOYEE")
 public class Employee {
 
-    /**
-     * 재직상태
-     */
-    @Getter
-    @AllArgsConstructor
-    public enum Status {
-        RESIGN("퇴사"),
-        EMPLOYED("재직중");
-
-        private String name;
-
-        public static Status getStatusByName(String name) {
-            Status result = null;
-
-            for(Status status : Employee.Status.values()) {
-                if(name.equals(status.getName())){
-                    result = status;
-                    break;
-                }
-            }
-
-            return result;
-        }
-    }
-
-
-    /**
-     * 직책
-     */
-    @Getter
-    @RequiredArgsConstructor
-    public enum Responsibility {
-        CEO("대표"),
-        MANAGER("매니저"),
-        TRAINER("트레이너");
-
-        private final String text;
-    }
-
     @Id
     @Column(name = "EMPLOYEE_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -101,8 +62,16 @@ public class Employee {
         this.passwordSalt = passwordSalt;
     }
 
-    public void setStatus(Status status) {
+    public void changeStatus(EmployeeStatus status) {
         this.status = status.getName();
     }
 
+    public void update(String address, String phoneNumber) {
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void changeBranch(Branch branch) {
+        this.branch = branch;
+    }
 }
