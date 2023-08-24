@@ -1,7 +1,7 @@
 package com.ffs.pt.domain;
 
 import com.ffs.common.exception.ServiceResultCodeException;
-import com.ffs.member.domain.Member;
+import com.ffs.user.member.domain.Member;
 import com.ffs.pt.PtResultCode;
 import lombok.Builder;
 import lombok.Getter;

@@ -54,7 +54,7 @@ public class BranchService {
         }
 
         log.info("Found all branch. count={}", branchList.size());
-        return branchInfoMapper.convertBranchListToBranchInfoList(branchList);
+        return branchInfoMapper.convertBranchesToBranchInfos(branchList);
     }
 
     public BranchInfo getBranchById(Long id) {
@@ -105,7 +105,7 @@ public class BranchService {
         }
 
         log.info("Found branch by branch group id. branchGroupId={}, count={}", branchGroupId, branchList.size());
-        return branchInfoMapper.convertBranchListToBranchInfoList(branchList);
+        return branchInfoMapper.convertBranchesToBranchInfos(branchList);
     }
 
     private Branch makeNewBranch(RegisterBranchRequest request, BranchGroup branchGroup) {

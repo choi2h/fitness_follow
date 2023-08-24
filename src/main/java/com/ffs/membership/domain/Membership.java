@@ -1,6 +1,6 @@
 package com.ffs.membership.domain;
 
-import com.ffs.member.domain.Member;
+import com.ffs.user.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

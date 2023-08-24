@@ -21,14 +21,14 @@ public class BranchInfoMapper {
                 .build();
     }
 
-    protected List<BranchInfo> convertBranchListToBranchInfoList(List<Branch> branchList) {
-        List<BranchInfo> branchInfoList = new ArrayList<>();
+    protected List<BranchInfo> convertBranchesToBranchInfos(List<Branch> branches) {
+        List<BranchInfo> branchInfos = new ArrayList<>();
 
-        for(Branch branch : branchList) {
+        for(Branch branch : branches) {
             BranchInfo branchInfo = this.convertBranchToBranchInfo(branch);
-            branchInfoList.add(branchInfo);
+            branchInfos.add(branchInfo);
         }
 
-        return branchInfoList;
+        return branchInfos;
     }
 }

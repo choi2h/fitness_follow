@@ -1,7 +1,7 @@
 package com.ffs.pt.application;
 
 import com.ffs.common.exception.ServiceResultCodeException;
-import com.ffs.member.domain.Member;
+import com.ffs.user.member.domain.Member;
 import com.ffs.pt.dto.PtInfo;
 import com.ffs.pt.PtResultCode;
 import com.ffs.pt.domain.Pt;

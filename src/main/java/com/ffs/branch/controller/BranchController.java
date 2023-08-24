@@ -5,9 +5,11 @@ import com.ffs.branch.dto.BranchInfo;
 import com.ffs.branch.dto.BranchResult;
 import com.ffs.branch.dto.RegisterBranchRequest;
 import com.ffs.branch.dto.UpdateBranchRequest;
+import com.ffs.user.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,6 +22,7 @@ public class BranchController {
 
     private final BranchService branchService;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     private ResponseEntity<Object> registerNewBranch(@RequestBody @Valid RegisterBranchRequest request) {
         BranchInfo branchInfo = branchService.registerBranch(request);
@@ -28,6 +31,7 @@ public class BranchController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN,ROLE_CEO')")
     @GetMapping("/all")
     private ResponseEntity<Object> findAllBranch() {
         List<BranchInfo> branchInfoList = branchService.getAllBranch();
@@ -36,6 +40,7 @@ public class BranchController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN,ROLE_CEO')")
     @GetMapping("/{id}")
     private ResponseEntity<Object> findBranchById(@PathVariable Long id) {
         BranchInfo branchInfo = branchService.getBranchById(id);
@@ -44,6 +49,7 @@ public class BranchController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN, ROLE_CEO, ROLE_MANAGER')")
     @PutMapping("/{id}")
     private ResponseEntity<Object> updateBranchInfo(@PathVariable Long id, @RequestBody @Valid UpdateBranchRequest request) {
         BranchInfo branchInfo = branchService.updateBranchById(id, request);
@@ -52,6 +58,7 @@ public class BranchController {
         return new ResponseEntity<>(branchResult, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN,ROLE_CEO')")
     @GetMapping("/all/{id}")
     public ResponseEntity<Object> findBranchListByGroupId(@PathVariable Long id) {
         List<BranchInfo> branchInfoList = branchService.getAllBranchByBranchGroupId(id);

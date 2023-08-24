@@ -1,8 +1,8 @@
 package com.ffs.purchase_history.domain;
 
 import com.ffs.branch.domain.Branch;
-import com.ffs.employee.domain.Employee;
-import com.ffs.member.domain.Member;
+import com.ffs.user.employee.domain.Employee;
+import com.ffs.user.member.domain.Member;
 import com.ffs.purchase_detail.domain.PurchaseDetail;
 import lombok.Builder;
 import lombok.Getter;

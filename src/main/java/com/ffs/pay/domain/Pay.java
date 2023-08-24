@@ -1,6 +1,6 @@
 package com.ffs.pay.domain;
 
-import com.ffs.employee.domain.Employee;
+import com.ffs.user.employee.domain.Employee;
 import lombok.Getter;
 import lombok.Setter;
 

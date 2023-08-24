@@ -1,7 +1,7 @@
 package com.ffs.membership.service;
 
-import com.ffs.member.domain.Member;
-import com.ffs.member.domain.repository.MemberRepository;
+import com.ffs.user.member.domain.Member;
+import com.ffs.user.member.domain.repository.MemberRepository;
 import com.ffs.membership.application.MembershipService;
 import com.ffs.membership.domain.Membership;
 import com.ffs.membership.domain.repository.MembershipRepository;

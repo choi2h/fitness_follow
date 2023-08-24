@@ -1,7 +1,7 @@
 package com.ffs.lesson.domain;
 
-import com.ffs.employee.domain.Employee;
-import com.ffs.member.domain.Member;
+import com.ffs.user.employee.domain.Employee;
+import com.ffs.user.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

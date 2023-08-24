@@ -1,7 +1,7 @@
 package com.ffs.membership.application;
 
 import com.ffs.common.exception.ServiceResultCodeException;
-import com.ffs.member.domain.Member;
+import com.ffs.user.member.domain.Member;
 import com.ffs.membership.MembershipResultCode;
 import com.ffs.membership.domain.Membership;
 import com.ffs.membership.domain.repository.MembershipRepository;

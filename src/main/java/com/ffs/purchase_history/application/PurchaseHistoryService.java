@@ -4,15 +4,14 @@ import com.ffs.common.exception.ServiceResultCodeException;
 import com.ffs.branch.BranchResultCode;
 import com.ffs.branch.domain.Branch;
 import com.ffs.branch.domain.repository.BranchRepository;
-import com.ffs.employee.domain.Employee;
-import com.ffs.employee.domain.repository.EmployeeRepository;
-import com.ffs.member.domain.Member;
-import com.ffs.member.domain.repository.MemberRepository;
+import com.ffs.user.employee.domain.Employee;
+import com.ffs.user.employee.domain.repository.EmployeeRepository;
+import com.ffs.user.member.domain.Member;
+import com.ffs.user.member.domain.repository.MemberRepository;
 import com.ffs.purchase_history.PurchaseHistoryResultCode;
 import com.ffs.purchase_history.domain.PurchaseHistory;
 import com.ffs.purchase_history.domain.repository.PurchaseHistoryRepository;
-import com.ffs.employee.EmployeeResultCode;
-import com.ffs.member.MemberResultCode;
+import com.ffs.user.UserResultCode;
 import com.ffs.purchase_history.dto.RegisterPurchaseHistoryRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,13 +45,13 @@ public class PurchaseHistoryService {
         Optional<Member> optionalMember = memberRepository.findById(memberId);
         if(optionalMember.isEmpty()) {
             log.debug("Not exist member. memberId={}", memberId);
-            throw new ServiceResultCodeException(MemberResultCode.NOT_EXIST_MEMBER, memberId);
+            throw new ServiceResultCodeException(UserResultCode.NOT_EXIST_MEMBER, memberId);
         }
 
         Optional<Employee> optionalEmployee = employeeRepository.findById(employeeId);
         if(optionalEmployee.isEmpty()) {
             log.debug("Not exist employee. employeeId={}", employeeId);
-            throw new ServiceResultCodeException(EmployeeResultCode.NOT_EXIST_EMPLOYEE, employeeId);
+            throw new ServiceResultCodeException(UserResultCode.NOT_EXIST_EMPLOYEE, employeeId);
         }
 
         Branch branch = optionalBranch.get();
