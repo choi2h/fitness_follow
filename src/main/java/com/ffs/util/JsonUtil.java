@@ -11,7 +11,16 @@ public class JsonUtil {
         this.objectMapper = objectMapper;
     }
 
+    public <T> T getObjectToObject(Object value, Class<T> classType) {
+        return objectMapper.convertValue(value, classType);
+    }
+
     public <T> T jsonToObject(String jsonValue, Class<T> classType) throws JsonProcessingException {
         return objectMapper.readValue(jsonValue, classType);
+    }
+
+    public String objectToJson(Object o) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(o);
+
     }
 }

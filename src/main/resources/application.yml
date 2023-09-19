@@ -8,6 +8,10 @@ server:
 #      force: true
 
 spring:
+  redis:
+    port: 6379
+    host: 127.0.0.1
+    password: secure1234
   datasource:
 #    url: jdbc:h2:tcp://localhost/~/ffs
 #    username: sa
@@ -17,7 +21,6 @@ spring:
     username: ffsuser
     password: sec1234
     driver-class-name: com.mysql.cj.jdbc.Driver
-
   jpa:
     hibernate:
       ddl-auto: none
@@ -25,10 +28,10 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
-#    database: mysql
 
 security:
   jwt:
     token:
       secret-key: secret
-      expire-length: 60000
+      valid-length: 120000
+      expire-length: 240000

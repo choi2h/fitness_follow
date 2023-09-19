@@ -1,19 +1,21 @@
 package com.ffs.auth.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ffs.auth.AuthUserProvider;
 import com.ffs.auth.JwtTokenProvider;
 import com.ffs.auth.PrincipalDetails;
+import com.ffs.auth.Token;
+import com.ffs.auth.domain.AuthToken;
+import com.ffs.auth.repository.redis.RedisUtil;
 import com.ffs.user.User;
 import com.ffs.user.member.dto.LoginRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -26,7 +28,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
-    private final AuthUserProvider authUserProvider;
+    private final RedisUtil redisUtil;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -55,13 +57,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             return null;
         }
 
-        User user = authUserProvider.getUser(loginRequest);
-        if(user == null) {
-            return null;
-        }
-
-        log.debug("User role={}", user.getRole());
-
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginRequest.getId(), loginRequest.getPassword());
         log.debug("Token={}", authenticationToken);
@@ -76,12 +71,24 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         return authentication;
     }
 
+    @Transactional
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.debug("successfulAuthentication 실행-인증완료");
         PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
+        User user = principalDetails.getUser();
 
-        String jwtToken = jwtTokenProvider.createToken(principalDetails.getUser());
-        response.addHeader("Authorization", "Bearer "+jwtToken);
+        Token jwtToken = jwtTokenProvider.createToken(user);
+        response.addHeader("AT_Authorization", "Bearer "+jwtToken.getAccessToken());
+        response.addHeader("RT_Authorization", "Bearer "+jwtToken.getRefreshToken());
+        log.debug("Generate access token. AT_Authorization={}", jwtToken.getAccessToken());
+        log.debug("Generate refresh token. RT_Authorization={}", jwtToken.getRefreshToken());
+
+        String userId = user.getLoginId();
+        redisUtil.set(userId, jwtToken, 30000);
+
+        log.debug("accessToken={}", jwtToken.getAccessToken());
+        log.debug("refreshToken={}", jwtToken.getRefreshToken());
+        redisUtil.set(userId, jwtToken, 30000);
     }
 }

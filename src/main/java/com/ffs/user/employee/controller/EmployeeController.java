@@ -57,5 +57,13 @@ public class EmployeeController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PostMapping("/join")
+    public ResponseEntity<Object> registerNewEmployee(@RequestBody @Valid RegisterEmployeeRequest request) {
+        EmployeeInfo employee = employeeService.registerNewEmployee(request);
+        EmployeeResult response = EmployeeResult.builder().employee(employee).build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 }

@@ -1,6 +1,8 @@
 package com.ffs.auth;
 
 import com.ffs.auth.filter.JwtAuthenticationFilter;
+import com.ffs.auth.filter.JwtAuthorizationFilter;
+import com.ffs.auth.repository.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +23,7 @@ public class WebSecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthUserProvider authUserProvider;
+    private final RedisUtil redisUtil;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -34,9 +37,10 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        JwtAuthenticationFilter jwtAuthenticationFilter =
-//                new JwtAuthenticationFilter(
-//                        authenticationManager(authenticationConfiguration), jwtTokenProvider, authUserProvider);
+        AuthenticationManager authenticationManager = authenticationManager(authenticationConfiguration);
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenProvider, redisUtil);
+//        JwtFilter jwtFilter = new JwtFilter(jwtTokenProvider, authUserProvider);
+        JwtAuthorizationFilter jwtAuthorizationFilter = new JwtAuthorizationFilter(authenticationManager, jwtTokenProvider, authUserProvider);
 
         return http.csrf().disable()
                 .cors().disable()
@@ -45,12 +49,14 @@ public class WebSecurityConfig {
                 .and()
                 .cors().configurationSource(corsConfig.corsConfigurationSource())
                 .and()
-                .addFilter(new JwtAuthenticationFilter(
-                        authenticationManager(authenticationConfiguration), jwtTokenProvider, authUserProvider))
+                .addFilter(jwtAuthenticationFilter)
+                .addFilter(jwtAuthorizationFilter)
                 .authorizeHttpRequests(request -> request
 //                        .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                         .antMatchers("/login").permitAll()
-                        .antMatchers("/**/join").permitAll()
+                        .antMatchers("/employee/join").permitAll()
+                        .antMatchers("/member/join").permitAll()
+                        .antMatchers("/auth/token").permitAll()
                         .anyRequest().authenticated()	// 어떠한 요청이라도 인증필요
                 )
 //                .formLogin(login -> login	// form 방식 로그인 사용
