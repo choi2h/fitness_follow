@@ -21,11 +21,11 @@ public class Lesson {
     @Column(name = "LESSON_ID")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "EMPLOYEE_ID")
     private Employee employee;
 
@@ -44,5 +44,19 @@ public class Lesson {
         this.employee = employee;
         this.lessonDateTime = lessonDateTime;
         this.price = price;
+        this.status = LessonStatus.RESERVE.name();
+    }
+
+    public void cancel() {
+        this.status = LessonStatus.CANCEL.name();
+    }
+
+    public void complete() {
+        this.status = LessonStatus.COMPLETION.name();
+    }
+
+    public void absence() {
+        this.status = LessonStatus.ABSENCE.name();
+
     }
 }
