@@ -1,11 +1,9 @@
 package com.ffs.auth.filter;
 
+import com.ffs.auth.AuthUser;
 import com.ffs.auth.AuthUserProvider;
 import com.ffs.auth.JwtTokenProvider;
 import com.ffs.auth.PrincipalDetails;
-import com.ffs.user.User;
-import io.jsonwebtoken.Claims;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -49,12 +47,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
         System.out.println("=============== JWT 토큰 검증 시작 ===============");
         if(jwtTokenProvider.validateAbleToken(jwtToken)) {
-            User userEntity = getUserByToken(jwtToken);
-            if(userEntity == null) {
+            AuthUser authUser = getUserByToken(jwtToken);
+            if(authUser == null) {
                 return;
             }
 
-            PrincipalDetails principalDetails = new PrincipalDetails(userEntity);
+            PrincipalDetails principalDetails = new PrincipalDetails(authUser);
             //JWT 토큰 서명이 정상이면 Authentication 객체를 만들어준다.
             Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
 
@@ -67,10 +65,10 @@ public class JwtFilter extends OncePerRequestFilter {
         }
     }
 
-    private User getUserByToken(String token) {
+    private AuthUser getUserByToken(String token) {
         String userId = jwtTokenProvider.getPayload(token);
         String role = jwtTokenProvider.getUserType(token);
 
-        return authUserProvider.getUser(role, userId);
+        return authUserProvider.getUser(userId, role);
     }
 }

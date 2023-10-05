@@ -54,7 +54,7 @@ public class JwtTokenProvider {
         claims.setExpiration(validity);
         return Jwts.builder()
                 .setHeaderParam("typ", "JWT")
-                .setSubject(user.getName())
+                .setSubject(user.getLoginId())
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .setClaims(claims)

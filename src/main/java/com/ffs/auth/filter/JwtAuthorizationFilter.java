@@ -1,11 +1,10 @@
 package com.ffs.auth.filter;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
+import com.ffs.auth.AuthUser;
 import com.ffs.auth.AuthUserProvider;
 import com.ffs.auth.JwtTokenProvider;
 import com.ffs.auth.PrincipalDetails;
-import com.ffs.user.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,30 +17,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-//package com.ffs.auth.filter;
-//
-//
-//import com.auth0.jwt.JWT;
-//import com.auth0.jwt.algorithms.Algorithm;
-//import com.ffs.auth.PrincipalDetails;
-//import com.ffs.user.User;
-//import lombok.extern.slf4j.Slf4j;
-//import org.springframework.security.authentication.AuthenticationManager;
-//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-//import org.springframework.security.core.Authentication;
-//import org.springframework.security.core.context.SecurityContextHolder;
-//import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-//
-//import javax.servlet.FilterChain;
-//import javax.servlet.ServletException;
-//import javax.servlet.http.HttpServletRequest;
-//import javax.servlet.http.HttpServletResponse;
-//import java.io.IOException;
-//
-//// 시큐리티가 filter를 가지고 있는데 그 필터 중 BasicAuthenticationFilter라는 것이 있음.
-//// 권한이나 인증이 필요한 특정 주소 요청 시 이 필터를 무조건 타게 되어있음.
-//// 권한이나 인증이 필요한 주소가 아니면 이 필터를 안 탐.
-//@Slf4j
+// 시큐리티가 filter를 가지고 있는데 그 필터 중 BasicAuthenticationFilter라는 것이 있음.
+// 권한이나 인증이 필요한 특정 주소 요청 시 이 필터를 무조건 타게 되어있음.
+// 권한이나 인증이 필요한 주소가 아니면 이 필터를 안 탐.
+@Slf4j
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private static final String AUTH_HTTP_HEADER_KEY = "AT_Authorization";
@@ -75,14 +54,15 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         System.out.println("=============== JWT 토큰 검증 시작 ===============");
         System.out.println("token : " + jwtHeader);
-        if(jwtTokenProvider.validateAbleToken(jwtHeader.replace("Bearer ", ""))) {
-            User userEntity = getUserByToken(jwtHeader.replace("Bearer ", ""));
-            if(userEntity == null) {
-                System.out.println("Token 관련 User가 없음");
-                return;
-            }
+        String token = jwtHeader.replace("Bearer ", "");
+        if(jwtTokenProvider.validateAbleToken(token)) {
+            String userId = jwtTokenProvider.getPayload(token);
+            String role = jwtTokenProvider.getUserType(token);
 
-            PrincipalDetails principalDetails = new PrincipalDetails(userEntity);
+            System.out.println("loginId=" + userId + "      role=" + role);
+            AuthUser authUser = authUserProvider.getUser(userId, role);
+
+            PrincipalDetails principalDetails = new PrincipalDetails(authUser);
             //JWT 토큰 서명이 정상이면 Authentication 객체를 만들어준다.
             Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
 
@@ -93,13 +73,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
             chain.doFilter(request, response);
         }
-    }
-
-    private User getUserByToken(String token) {
-        String userId = jwtTokenProvider.getPayload(token);
-        String role = jwtTokenProvider.getUserType(token);
-
-        return authUserProvider.getUser(role, userId);
     }
 }
 

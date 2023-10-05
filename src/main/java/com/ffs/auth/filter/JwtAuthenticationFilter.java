@@ -1,12 +1,11 @@
 package com.ffs.auth.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ffs.auth.AuthUser;
 import com.ffs.auth.JwtTokenProvider;
 import com.ffs.auth.PrincipalDetails;
 import com.ffs.auth.Token;
-import com.ffs.auth.domain.AuthToken;
 import com.ffs.auth.repository.redis.RedisUtil;
-import com.ffs.user.User;
 import com.ffs.user.member.dto.LoginRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -73,10 +72,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Transactional
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+                                            FilterChain chain, Authentication authResult) throws IOException {
         log.debug("successfulAuthentication 실행-인증완료");
         PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
-        User user = principalDetails.getUser();
+        AuthUser user = principalDetails.getAuthUser();
 
         Token jwtToken = jwtTokenProvider.createToken(user);
         response.addHeader("AT_Authorization", "Bearer "+jwtToken.getAccessToken());

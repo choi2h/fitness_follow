@@ -1,15 +1,11 @@
 package com.ffs.auth.application;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.ffs.auth.AuthUserProvider;
-import com.ffs.auth.JwtTokenProvider;
-import com.ffs.auth.PrincipalDetails;
-import com.ffs.auth.Token;
+import com.ffs.auth.*;
 import com.ffs.auth.controller.TokenRequest;
 import com.ffs.auth.controller.dto.LogoutRequest;
 import com.ffs.auth.exception.InvalidTokenException;
 import com.ffs.auth.repository.redis.RedisUtil;
-import com.ffs.user.User;
 import com.ffs.util.JsonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,11 +49,12 @@ public class AuthService {
 
         jwtTokenProvider.validateAbleToken(token.getRefreshToken());
         String role = jwtTokenProvider.getUserType(accessToken);
-        User user = authUserProvider.getUser(role, userId);
 
-        Token newToken = jwtTokenProvider.createToken(user);
+        AuthUser authUser = authUserProvider.getUser(userId, role);
+
+        Token newToken = jwtTokenProvider.createToken(authUser);
         newToken.setRefreshToken("Bearer " + refreshToken);
-        setAuthentication(user);
+        setAuthentication(authUser);
         log.debug("accessToken={}", newToken.getAccessToken());
         log.debug("refreshToken={}", newToken.getRefreshToken());
         redisUtil.set(userId, newToken, 30000);
@@ -65,8 +62,8 @@ public class AuthService {
         return newToken.getAccessToken();
     }
 
-    private void setAuthentication(User userEntity) {
-        PrincipalDetails principalDetails = new PrincipalDetails(userEntity);
+    private void setAuthentication(AuthUser authUser) {
+        PrincipalDetails principalDetails = new PrincipalDetails(authUser);
         //JWT 토큰 서명이 정상이면 Authentication 객체를 만들어준다.
         Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
 

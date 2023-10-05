@@ -1,6 +1,5 @@
 package com.ffs.auth;
 
-import com.ffs.user.User;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,27 +11,31 @@ import java.util.Collection;
 @Getter @Setter
 public class PrincipalDetails implements UserDetails {
 
-    private User user;
+    private AuthUser authUser;
 
-    public PrincipalDetails(User user) {
-        this.user = user;
+    public PrincipalDetails(AuthUser authUser) {
+        this.authUser = authUser;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(() -> user.getRole().getName());
+        authorities.add(() -> authUser.getRole().getName());
         return authorities;
+    }
+
+    public Long getId() {
+        return authUser.getUserId();
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return authUser.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getName();
+        return authUser.getLoginId();
     }
 
     @Override
