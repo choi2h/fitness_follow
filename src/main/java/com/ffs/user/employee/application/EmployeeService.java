@@ -71,6 +71,21 @@ public class EmployeeService {
         return employeeMapperService.employeeToEmployeeInfo(employee);
     }
 
+    public EmployeeInfo getEmployeeByBranchIdAndEmployeeId(Long branchId, Long employeeId) {
+        log.debug("Search employee by id. branchId={}, employeeId={}", branchId, employeeId);
+
+        Employee employee = findEmployeeById(employeeId);
+        Long employeeBranchId = employee.getBranch().getId();
+        if(!employeeBranchId.equals(branchId)) {
+            log.info("Not have permission for employee. myBranchId={}, employeeBranchId={}", branchId, employeeBranchId);
+            throw new ServiceResultCodeException(UserResultCode.NOT_HAVE_PERMISSION_FOR_EMPLOYEE);
+        }
+
+        log.debug("Found employee by id. id={}, name={}", employeeId, employee.getName());
+
+        return employeeMapperService.employeeToEmployeeInfo(employee);
+    }
+
     public List<EmployeeInfo> getEmployeeByBranchId(Long branchId) {
         log.debug("Search employee list by branch id. branchId={}", branchId);
 
