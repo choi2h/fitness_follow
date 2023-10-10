@@ -18,40 +18,17 @@ public class Employee extends User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "BRANCH_ID")
-    private Branch branch;
-
-    @Column(name = "ADDRESS")
-    private String address;
-
-    @Column(name = "PHONE_NUMBER")
-    private String phoneNumber;
-
     @Column(name = "STATUS")
     private String status;
 
     @Builder
     public Employee(Branch branch, String name, Role role, String address, String phoneNumber, String status,
                     String loginId, String password, String passwordType, String passwordSalt) {
-        this.branch = branch;
-        this.address = address;
-        this.phoneNumber = phoneNumber;
         this.status = status;
-
-        setUserInfo(name, loginId, password, passwordType, passwordSalt, role);
+        setUserInfo(name, loginId, password, passwordType, passwordSalt, branch, role, address, phoneNumber);
     }
 
     public void changeStatus(EmployeeStatus status) {
         this.status = status.getName();
-    }
-
-    public void update(String address, String phoneNumber) {
-        this.address = address;
-        this.phoneNumber = phoneNumber;
-    }
-
-    public void changeBranch(Branch branch) {
-        this.branch = branch;
     }
 }

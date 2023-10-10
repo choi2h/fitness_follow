@@ -22,32 +22,20 @@ public class Member extends User {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "BRANCH_ID")
-    private Branch branch;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "EMPLOYEE_ID")
     private Employee employee;
 
     @Column(name = "STATUS")
     private String status; //(일반회원, PT회원, 휴면회원, 만기회원)
 
-    @Column(name = "ADDRESS")
-    private String address;
-
-    @Column(name = "PHONE_NUMBER")
-    private String phoneNumber;
-
 
     @Builder
     public Member(Branch branch, String name, String status, String address,
                   String phoneNumber, String loginId, String password, String passwordType, String passwordSalt) {
-        this.branch = branch;
+//        this.branch = branch;
         this.status = status;
-        this.address = address;
-        this.phoneNumber = phoneNumber;
 
-        setUserInfo(name, loginId, password, passwordType, passwordSalt, Role.MEMBER);
+        setUserInfo(name, loginId, password, passwordType, passwordSalt, branch, Role.MEMBER, address, phoneNumber);
     }
 
     public void setEmployee(Employee employee) {
