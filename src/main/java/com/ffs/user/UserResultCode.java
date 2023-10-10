@@ -22,8 +22,9 @@ public enum UserResultCode implements ResultCode<String> {
     NOT_EXIST_EMPLOYEE("E002", "존재하는 않는 직원입니다.", HttpStatus.NOT_FOUND),
     NOT_EXIST_EMPLOYEE_FOR_BRANCH("E003", "해당 지점에 근무하는 직원 정보가 없습니다.", HttpStatus.NOT_FOUND),
     NOT_HAVE_PERMISSION_FOR_MEMBER("E004", "회원에 대한 권한이 없습니다.", HttpStatus.BAD_REQUEST),
-    INVALID_VALUE("E005", "잘못된 요청입니다.", HttpStatus.BAD_REQUEST),
-    INVALID_ROLE("E006", "잘못된 권한 정보입니다.", HttpStatus.BAD_REQUEST)
+    NOT_HAVE_PERMISSION_FOR_EMPLOYEE("E005", "회원에 대한 권한이 없습니다.", HttpStatus.BAD_REQUEST),
+    INVALID_VALUE("E006", "잘못된 요청입니다.", HttpStatus.BAD_REQUEST),
+    INVALID_ROLE("E007", "잘못된 권한 정보입니다.", HttpStatus.BAD_REQUEST)
     ;
 
     @Getter
