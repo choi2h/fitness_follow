@@ -32,7 +32,6 @@ public class Member extends User {
     @Builder
     public Member(Branch branch, String name, String status, String address,
                   String phoneNumber, String loginId, String password, String passwordType, String passwordSalt) {
-//        this.branch = branch;
         this.status = status;
 
         setUserInfo(name, loginId, password, passwordType, passwordSalt, branch, Role.MEMBER, address, phoneNumber);
