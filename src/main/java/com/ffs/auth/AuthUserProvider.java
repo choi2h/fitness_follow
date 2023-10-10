@@ -2,6 +2,7 @@ package com.ffs.auth;
 
 import com.ffs.common.exception.ServiceResultCodeException;
 import com.ffs.user.Role;
+import com.ffs.user.User;
 import com.ffs.user.UserResultCode;
 import com.ffs.user.employee.domain.Employee;
 import com.ffs.user.employee.domain.repository.EmployeeRepository;
@@ -19,28 +20,30 @@ public class AuthUserProvider {
     private final MemberRepository memberRepository;
     private final EmployeeRepository employeeRepository;
 
-    public AuthUser getUser(String loginId, String role) {
+    public AuthUser getAuthUser(String loginId, String role) {
         if (role.equals(Role.MEMBER.getRoleText())) {
             Member member = getMember(loginId);
-            return getAuthUser(member);
+            return getAuthUser(member.getId(), member);
         } else {
             Employee employee = getAdmin(loginId);
-            return getAuthUser(employee);
+            return getAuthUser(employee.getId(), employee);
         }
     }
 
-    public AuthUser getUser(String loginId) {
+    public AuthUser getAuthUser(String loginId) {
         Optional<Employee> employeeOptional = employeeRepository.findByLoginId(loginId);
         if(employeeOptional.isEmpty()) {
             Optional<Member> memberOptional =memberRepository.findByLoginId(loginId);
             if(memberOptional.isEmpty()) {
                 return null;
             } else {
-                return getAuthUser(memberOptional.get());
+                Member member = memberOptional.get();
+                return getAuthUser(member.getId(), member);
             }
         }
 
-        return getAuthUser(employeeOptional.get());
+        Employee employee = employeeOptional.get();
+        return getAuthUser(employee.getId(), employee);
     }
 
     private Employee getAdmin(String id) {
@@ -63,24 +66,14 @@ public class AuthUserProvider {
         return memberOptional.get();
     }
 
-    private AuthUser getAuthUser(Member member) {
+    private AuthUser getAuthUser(Long id, User user) {
         return AuthUser.builder()
-                .id(member.getId())
-                .name(member.getName())
-                .loginId(member.getLoginId())
-                .password(member.getPassword())
-                .role(member.getRole())
-                .build();
-
-    }
-
-    private AuthUser getAuthUser(Employee employee) {
-        return AuthUser.builder()
-                .id(employee.getId())
-                .name(employee.getName())
-                .loginId(employee.getLoginId())
-                .password(employee.getPassword())
-                .role(employee.getRole())
+                .id(id)
+                .name(user.getName())
+                .loginId(user.getLoginId())
+                .password(user.getPassword())
+                .role(user.getRole())
+                .branchId(user.getBranch().getId())
                 .build();
 
     }

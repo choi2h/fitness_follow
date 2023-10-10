@@ -1,7 +1,6 @@
 package com.ffs.auth;
 
 import com.ffs.auth.exception.InvalidTokenException;
-import com.ffs.user.User;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -25,7 +24,7 @@ public class JwtTokenProvider {
         this.expireMilliSeconds = expireMilliSeconds;
     }
 
-    public Token createToken(User user) {
+    public Token createToken(AuthUser user) {
         final Date now = new Date();
         final Date validity = new Date(now.getTime() + validityInMilliSeconds);
         final Date expiration = new Date(now.getTime() + expireMilliSeconds);
@@ -50,7 +49,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    private String generateAccessToken(User user, Date now, Date validity, Claims claims) {
+    private String generateAccessToken(AuthUser user, Date now, Date validity, Claims claims) {
         claims.setExpiration(validity);
         return Jwts.builder()
                 .setHeaderParam("typ", "JWT")

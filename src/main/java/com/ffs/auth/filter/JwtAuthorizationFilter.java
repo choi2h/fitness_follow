@@ -60,7 +60,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             String role = jwtTokenProvider.getUserType(token);
 
             System.out.println("loginId=" + userId + "      role=" + role);
-            AuthUser authUser = authUserProvider.getUser(userId, role);
+            AuthUser authUser = authUserProvider.getAuthUser(userId, role);
 
             PrincipalDetails principalDetails = new PrincipalDetails(authUser);
             //JWT 토큰 서명이 정상이면 Authentication 객체를 만들어준다.
