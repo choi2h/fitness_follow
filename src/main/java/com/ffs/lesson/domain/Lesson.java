@@ -1,5 +1,6 @@
 package com.ffs.lesson.domain;
 
+import com.ffs.lesson.domain.repository.LessonStatusConverter;
 import com.ffs.user.employee.domain.Employee;
 import com.ffs.user.member.domain.Member;
 import lombok.Builder;
@@ -33,7 +34,8 @@ public class Lesson {
     private LocalDateTime lessonDateTime;
 
     @Column(name = "STATUS")
-    private String status; // (예약, 완료, 취소, 결석)
+    @Convert(converter = LessonStatusConverter.class)
+    private LessonStatus status; // (예약, 완료, 취소, 결석)
 
     @Column(name = "PRICE")
     private BigDecimal price;
@@ -44,19 +46,22 @@ public class Lesson {
         this.employee = employee;
         this.lessonDateTime = lessonDateTime;
         this.price = price;
-        this.status = LessonStatus.RESERVE.name();
+        this.status = LessonStatus.RESERVE;
+    }
+
+    public void reserve() {
+        this.status = LessonStatus.RESERVE;
     }
 
     public void cancel() {
-        this.status = LessonStatus.CANCEL.name();
+        this.status = LessonStatus.CANCEL;
     }
 
     public void complete() {
-        this.status = LessonStatus.COMPLETION.name();
+        this.status = LessonStatus.COMPLETION;
     }
 
     public void absence() {
-        this.status = LessonStatus.ABSENCE.name();
-
+        this.status = LessonStatus.ABSENCE;
     }
 }

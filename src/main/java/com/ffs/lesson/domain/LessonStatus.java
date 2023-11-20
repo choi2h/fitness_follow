@@ -12,4 +12,17 @@ public enum LessonStatus {
     ABSENCE("결석");
 
     private String name;
+
+    public static LessonStatus getLessonStatus(String name) {
+        LessonStatus result = null;
+
+        for(LessonStatus status : LessonStatus.values()) {
+            if(name.equals(status.getName())){
+                result = status;
+                break;
+            }
+        }
+
+        return result;
+    }
 }
