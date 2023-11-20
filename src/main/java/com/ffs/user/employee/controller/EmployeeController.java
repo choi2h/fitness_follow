@@ -29,7 +29,7 @@ public class EmployeeController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/me}")
+    @GetMapping("/me")
     public ResponseEntity<Object> getMyInfo(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         Long id = principalDetails.getId();
         EmployeeInfo employeeInfo = employeeService.getEmployeeById(id);
