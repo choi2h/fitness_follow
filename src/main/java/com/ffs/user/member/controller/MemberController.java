@@ -33,8 +33,8 @@ public class MemberController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<Object> getAllMembers() {
-        List<MemberInfo> memberInfoList = memberService.getAllMembers();
-        MemberResult response = MemberResult.builder().memberList(memberInfoList).build();
+        List<MemberInfo> memberInfos = memberService.getAllMembers();
+        MemberResult response = MemberResult.builder().memberList(memberInfos).build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -49,11 +49,21 @@ public class MemberController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_CEO, ROLE_MANAGER, ROLE_TRAINER')")
+    @GetMapping("/my/members")
+    public ResponseEntity<Object> getMemberListByEmployeeId(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Long id = principalDetails.getId();
+        List<MemberInfo> memberInfos = memberService.getMembersByEmployeeId(id);
+        MemberResult response = MemberResult.builder().memberList(memberInfos).build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @PreAuthorize("hasRole('ROLE_ADMIN,ROLE_CEO,ROLE_MANAGER')")
     @GetMapping("/all")
     public ResponseEntity<Object> getMemberListByBranchId(@PathParam("branch") Long branchId) {
-        List<MemberInfo> memberList = memberService.getMembersByBranchId(branchId);
-        MemberResult response = MemberResult.builder().memberList(memberList).build();
+        List<MemberInfo> memberInfos = memberService.getMembersByBranchId(branchId);
+        MemberResult response = MemberResult.builder().memberList(memberInfos).build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
