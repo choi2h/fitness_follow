@@ -23,7 +23,7 @@ public class LessonInfoMapper {
                 .employeeId(employee.getId())
                 .employeeName(employee.getName())
                 .lessonDateTime(lesson.getLessonDateTime())
-                .status(lesson.getStatus())
+                .status(lesson.getStatus().getName())
                 .build();
     }
 

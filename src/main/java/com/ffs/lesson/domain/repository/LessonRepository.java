@@ -11,6 +11,10 @@ public interface LessonRepository extends Repository<Lesson, Long> {
 
     void save(Lesson lesson);
 
+    Optional<Lesson> findById(Long id);
+
+    void deleteById(Long id);
+
     List<Lesson> findAllByMemberIdAndLessonDateTimeBetween(Long memberId, LocalDateTime startTime, LocalDateTime endTime);
-    List<Lesson> findAllByEmployeeIdAndLessonDateTimeBetween(Long memberId, LocalDateTime startTime, LocalDateTime endTime);
+    List<Lesson> findAllByEmployeeIdAndLessonDateTimeBetweenOrderByLessonDateTime(Long memberId, LocalDateTime startTime, LocalDateTime endTime);
 }

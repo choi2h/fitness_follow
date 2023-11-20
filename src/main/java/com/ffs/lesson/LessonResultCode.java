@@ -7,7 +7,10 @@ import org.springframework.http.HttpStatus;
 
 public enum LessonResultCode implements ResultCode<String> {
     OK(DefaultResultCode.OK),
-    FAIL(DefaultResultCode.FAILED);
+    FAIL(DefaultResultCode.FAILED),
+    NOT_EXIST_LESSON("L001", "존재하지 않는 레슨 정보입니다.", HttpStatus.BAD_REQUEST),
+    NOT_HAVE_PERSIST_FOR_LESSON("L002", "레슨에 대한 권한이 없습니다.", HttpStatus.BAD_REQUEST)
+    ;
 
     @Getter
     private String code;
