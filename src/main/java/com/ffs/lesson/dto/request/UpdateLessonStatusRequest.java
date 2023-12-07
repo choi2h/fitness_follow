@@ -1,4 +1,4 @@
-package com.ffs.lesson.dto;
+package com.ffs.lesson.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

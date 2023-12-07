@@ -1,21 +1,21 @@
-package com.ffs.lesson.dto;
+package com.ffs.lesson.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
-public class FindLessonRequest {
+@NoArgsConstructor
+public class RegisterLessonRequest {
+    @NotEmpty
+    private Long memberId;
 
-//    @JsonFormat(pattern = "yyyy-MM-dd")
-//    private LocalDate date;
-
+    @NotEmpty
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime dateTime;
+    private LocalDateTime lessonDateTime;
 }
