@@ -1,6 +1,7 @@
 package com.ffs.auth;
 
 import com.ffs.auth.exception.InvalidTokenException;
+import com.ffs.user.Role;
 import com.ffs.user.User;
 import com.ffs.user.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
@@ -13,20 +14,19 @@ class JwtTokenProviderTest {
     private static final String JWT_SECRET_KEY = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".repeat(2);
     private static final long JWT_ACCESS_TOKEN_VALID_LENGTH = 3000;
     private static final long JWT_ACCESS_TOKEN_EXPIRE_LENGTH = 5000;
-    private static final User user = getMember();
+    private static final AuthUser user = getMember();
 
     private final JwtTokenProvider jwtTokenProvider =
             new JwtTokenProvider(JWT_SECRET_KEY, JWT_ACCESS_TOKEN_VALID_LENGTH, JWT_ACCESS_TOKEN_EXPIRE_LENGTH);
 
-    private static Member getMember() {
-        return  Member
+    private static AuthUser getMember() {
+        return  AuthUser
                 .builder()
-                .name("최이화")
-                .address("서울시 송파구")
-                .phoneNumber("010-0000-0000")
+                .branchId(1L)
+                .id(1L)
+                .role(Role.MEMBER)
+                .password("1234")
                 .loginId("qwe")
-                .password("123")
-                .status("일반회원")
                 .build();
     }
 
