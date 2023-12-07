@@ -5,17 +5,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
-public class RegisterLessonRequest {
-    @NotEmpty
-    private Long memberId;
+@AllArgsConstructor
+public class LessonOnDateRequest {
 
-    @NotEmpty
+//    @JsonFormat(pattern = "yyyy-MM-dd")
+//    private LocalDate date;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime lessonDateTime;
+    private LocalDateTime dateTime;
 }

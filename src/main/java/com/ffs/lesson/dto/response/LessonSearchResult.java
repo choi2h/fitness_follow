@@ -8,12 +8,11 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.Map;
 
 @Builder
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FindLessonResult extends AbstractResponse {
+public class LessonSearchResult extends AbstractResponse {
 
     private static final long serialVersionUID = 4494064209636802405L;
 

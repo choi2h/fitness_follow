@@ -8,11 +8,11 @@ import com.ffs.lesson.domain.Lesson;
 import com.ffs.lesson.domain.LessonStatus;
 import com.ffs.lesson.domain.repository.LessonRepository;
 import com.ffs.lesson.dto.*;
-import com.ffs.lesson.dto.request.RegisterLessonRequest;
-import com.ffs.lesson.dto.request.UpdateLessonStatusRequest;
-import com.ffs.lesson.dto.response.FindLessonDateResult;
-import com.ffs.lesson.dto.response.FindLessonRequest;
-import com.ffs.lesson.dto.response.FindLessonResult;
+import com.ffs.lesson.dto.request.LessonCreateRequest;
+import com.ffs.lesson.dto.request.LessonStatusUpdateRequest;
+import com.ffs.lesson.dto.response.LessonDateResult;
+import com.ffs.lesson.dto.request.LessonOnDateRequest;
+import com.ffs.lesson.dto.response.LessonSearchResult;
 import com.ffs.user.Role;
 import com.ffs.user.UserResultCode;
 import com.ffs.user.employee.domain.Employee;
@@ -40,8 +40,8 @@ public class LessonService {
     private final LessonRepository lessonRepository;
     private final LessonInfoMapper lessonInfoMapper;
 
-    //TODO 레슨의 상태는 예약/취소/완료/결석 네가지로 관리될 수 있다.
-    public void updateLessonState(PrincipalDetails userDetails, UpdateLessonStatusRequest request) {
+    // 레슨의 상태는 예약/취소/완료/결석 네가지로 관리될 수 있다.
+    public void updateLessonState(PrincipalDetails userDetails, LessonStatusUpdateRequest request) {
         Lesson lesson = getLesson(request.getId());
 
         Long lessonEmployeeId = lesson.getEmployee().getId();
@@ -65,14 +65,16 @@ public class LessonService {
 
     //TODO 조건에 맞춰 자신의 레슨을 조회할 수 있다.
     // 날짜(월별, 일별, 설정 기간 내) / 상태 / 회원
-    public List<LessonInfo> findLessonsForDate(PrincipalDetails userDetails, FindLessonRequest findLessonRequest) {
-        log.debug("Receive find lessons for date. date={}", findLessonRequest.getDateTime());
+
+    // 요청 날짜에 해당하는 레슨 정보들을 조회한다.
+    public List<LessonInfo> searchLessonOnDate(PrincipalDetails userDetails, LessonOnDateRequest request) {
+        log.debug("Receive find lessons for date. date={}", request.getDateTime());
         AuthUser authUser = userDetails.getAuthUser();
 
         Role role = authUser.getRole();
 
         List<Lesson> lessonList;
-        LocalDateTime lessonDateTime = findLessonRequest.getDateTime();
+        LocalDateTime lessonDateTime = request.getDateTime();
 
         LocalDateTime startTime = lessonDateTime.toLocalDate().atStartOfDay();
         LocalDateTime endTime = startTime.plusDays(1).minusSeconds(1);
@@ -89,12 +91,10 @@ public class LessonService {
         return lessonInfoMapper.convertLessonListToLessonInfoList(lessonList);
     }
 
-
-
-    //TODO 신규 레슨을 등록할 수 있다.
-    public void registerLesson(PrincipalDetails userDetails, RegisterLessonRequest registerLessonRequest) {
+    // 신규 레슨을 등록할 수 있다.
+    public void createLesson(PrincipalDetails userDetails, LessonCreateRequest request) {
         log.debug("Receive request for register lesson.");
-        Long memberId = registerLessonRequest.getMemberId();
+        Long memberId = request.getMemberId();
         log.debug("Register lesson memberId={}, employeeId={}", memberId, userDetails.getId());
         Optional<Member> memberOptional = memberRepository.findById(memberId);
         if(memberOptional.isEmpty()) {
@@ -108,7 +108,7 @@ public class LessonService {
             throw new ServiceResultCodeException(UserResultCode.NOT_HAVE_PERMISSION_FOR_MEMBER);
         }
 
-        LocalDateTime lessonDateTime = registerLessonRequest.getLessonDateTime();
+        LocalDateTime lessonDateTime = request.getLessonDateTime();
 
         Lesson lesson = Lesson.builder()
                 .employee(employee)
@@ -120,7 +120,7 @@ public class LessonService {
         lessonRepository.save(lesson);
     }
 
-    //TODO 레슨의 상세 정보를 조회할 수 있다.
+    // 레슨 ID를 이용해 레슨의 상세 정보를 조회할 수 있다.
     public LessonInfo findLessonInfoById(PrincipalDetails userDetails, Long lessonId) {
         Lesson lesson = getLesson(lessonId);
         Long lessonEmployeeId = lesson.getEmployee().getId();
@@ -131,7 +131,8 @@ public class LessonService {
         return lessonInfoMapper.convertLessonToLessonInfo(lesson);
     }
 
-    public FindLessonResult findLessonAfterDate(PrincipalDetails userDetails, String date) {
+    // 요청 날짜를 기준으로 이후 레슨정보들에 대하여 조회한다. (해당 날짜 포함)
+    public LessonSearchResult findLessonAfterDate(PrincipalDetails userDetails, String date) {
         int year = Integer.parseInt(date.substring(0,4));
         int month = Integer.parseInt(date.substring(5, 7));
         int day = Integer.parseInt(date.substring(8, 10));
@@ -142,10 +143,13 @@ public class LessonService {
                 .findLimit20ByEmployeeIdAndLessonDateTimeAfterOrderByLessonDateTime(id, dateTime);
 
         List<LessonInfos> lessonInfos = lessonInfoMapper.convertLessonListToLessonInfoMapByDate(lessons);
-        return FindLessonResult.builder().lessonInfosList(lessonInfos).build();
+        return LessonSearchResult.builder().lessonInfosList(lessonInfos).build();
     }
 
-    public FindLessonDateResult findLessonDate(PrincipalDetails userDetails, String focusDate) {
+    // 요청 날짜의 달을 기준으로 이전달 ~ 다음달 동안의 레슨이 존재하는 날짜를 조회한다.
+    // ex) focusDate = 2023.12.02
+    //     조회 기간 = 2023.11.01 ~ 2024.01.31
+    public LessonDateResult findLessonDateList(PrincipalDetails userDetails, String focusDate) {
         int year = Integer.parseInt(focusDate.substring(0,4));
         int month = Integer.parseInt(focusDate.substring(5, 7));
         LocalDate date = LocalDate.of(year, month, 1);
@@ -164,10 +168,10 @@ public class LessonService {
             lessonDates.add(lessonDate);
         }
 
-        return FindLessonDateResult.builder().lessonDates(lessonDates).build();
+        return LessonDateResult.builder().lessonDates(lessonDates).build();
     }
 
-    //TODO 레슨 취소(삭제)가 가능하다
+    // 레슨 ID로 레슨 취소(삭제)가 가능하다
     public void deleteLesson(PrincipalDetails userDetails, Long lessonId) {
         Lesson lesson = getLesson(lessonId);
         Long lessonEmployeeId = lesson.getEmployee().getId();
@@ -178,6 +182,7 @@ public class LessonService {
         lessonRepository.deleteById(lessonId);
     }
 
+    // 레슨ID로 레슨 조회한다.
     private Lesson getLesson(Long id) {
         Optional<Lesson> optionalLesson = lessonRepository.findById(id);
         if(optionalLesson.isEmpty()) {

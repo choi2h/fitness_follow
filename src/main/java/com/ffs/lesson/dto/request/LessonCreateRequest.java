@@ -11,13 +11,11 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateLessonRequest {
-
+public class LessonCreateRequest {
     @NotEmpty
     private Long memberId;
 
     @NotEmpty
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime lessonDateTime;
-
 }

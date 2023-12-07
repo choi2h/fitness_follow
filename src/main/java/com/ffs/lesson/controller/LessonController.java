@@ -4,11 +4,11 @@ import com.ffs.auth.PrincipalDetails;
 import com.ffs.lesson.LessonResultCode;
 import com.ffs.lesson.application.LessonService;
 import com.ffs.lesson.dto.*;
-import com.ffs.lesson.dto.request.RegisterLessonRequest;
-import com.ffs.lesson.dto.request.UpdateLessonStatusRequest;
-import com.ffs.lesson.dto.response.FindLessonDateResult;
-import com.ffs.lesson.dto.response.FindLessonRequest;
-import com.ffs.lesson.dto.response.FindLessonResult;
+import com.ffs.lesson.dto.request.LessonCreateRequest;
+import com.ffs.lesson.dto.request.LessonStatusUpdateRequest;
+import com.ffs.lesson.dto.response.LessonDateResult;
+import com.ffs.lesson.dto.request.LessonOnDateRequest;
+import com.ffs.lesson.dto.response.LessonSearchResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,21 +26,21 @@ public class LessonController {
 
     @PostMapping
     public ResponseEntity<Object> registerLesson(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                 @RequestBody RegisterLessonRequest registerLessonRequest) {
-        lessonService.registerLesson(principalDetails, registerLessonRequest);
+                                                 @RequestBody LessonCreateRequest lessonCreateRequest) {
+        lessonService.createLesson(principalDetails, lessonCreateRequest);
 
         return ResponseEntity.ok(LessonResultCode.OK);
     }
 
     @GetMapping
     public ResponseEntity<Object> findLessons(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                              @RequestBody FindLessonRequest findLessonRequest) {
-        List<LessonInfo> lessons = lessonService.findLessonsForDate(principalDetails, findLessonRequest);
+                                              @RequestBody LessonOnDateRequest lessonOnDateRequest) {
+        List<LessonInfo> lessons = lessonService.searchLessonOnDate(principalDetails, lessonOnDateRequest);
         if(lessons.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        FindLessonResult result = FindLessonResult.builder().lessonInfoList(lessons).build();
+        LessonSearchResult result = LessonSearchResult.builder().lessonInfoList(lessons).build();
 
         return ResponseEntity.ok().body(result);
     }
@@ -48,7 +48,7 @@ public class LessonController {
     @GetMapping("/after/{date}")
     public ResponseEntity<Object> findLessonForAfterDate(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                            @PathVariable String date) {
-        FindLessonResult result = lessonService.findLessonAfterDate(principalDetails, date);
+        LessonSearchResult result = lessonService.findLessonAfterDate(principalDetails, date);
 
         return ResponseEntity.ok().body(result);
     }
@@ -56,15 +56,15 @@ public class LessonController {
     @GetMapping("/month/{date}")
     public ResponseEntity<Object> findLessonDates(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                   @PathVariable String date) {
-        FindLessonDateResult result = lessonService.findLessonDate(principalDetails, date);
+        LessonDateResult result = lessonService.findLessonDateList(principalDetails, date);
 
         return ResponseEntity.ok().body(result);
     }
 
     @PutMapping
     public ResponseEntity<Object> updateLessonStatus(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                               @RequestBody UpdateLessonStatusRequest request) {
-        lessonService.updateLessonState(principalDetails, request);
+                                               @RequestBody LessonStatusUpdateRequest lessonStatusUpdateRequest) {
+        lessonService.updateLessonState(principalDetails, lessonStatusUpdateRequest);
 
         return ResponseEntity.ok(LessonResultCode.OK);
     }
@@ -73,7 +73,7 @@ public class LessonController {
 //    public ResponseEntity<Object> findLessonById(@AuthenticationPrincipal PrincipalDetails principalDetails,
 //                                                 @PathParam("id") Long lessonId) {
 //        LessonInfo lessonInfo = lessonService.findLessonInfoById(principalDetails, lessonId);
-//        FindLessonResult result = FindLessonResult.builder().lessonInfo(lessonInfo).build();
+//        LessonSearchResult result = LessonSearchResult.builder().lessonInfo(lessonInfo).build();
 //
 //        return ResponseEntity.ok().body(result);
 //    }

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateLessonStatusRequest {
+public class LessonStatusUpdateRequest {
 
     private Long id;
 

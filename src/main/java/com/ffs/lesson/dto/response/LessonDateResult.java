@@ -10,9 +10,9 @@ import java.util.List;
 @Builder
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FindLessonDateResult extends AbstractResponse {
+public class LessonDateResult extends AbstractResponse {
 
-    private static final long serialVersionUID = 4494064209636802405L;
+    private static final long serialßVersionUID = 4494064209636802405L;
 
     List<String> lessonDates;
 }
