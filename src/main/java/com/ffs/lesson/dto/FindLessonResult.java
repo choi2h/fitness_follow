@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Map;
 
 @Builder
 @Getter
@@ -17,5 +18,7 @@ public class FindLessonResult extends AbstractResponse {
     LessonInfo lessonInfo;
 
     List<LessonInfo> lessonInfoList;
+
+    List<LessonInfos> lessonInfosList;
 
 }

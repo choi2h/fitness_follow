@@ -126,6 +126,20 @@ public class LessonService {
         return lessonInfoMapper.convertLessonToLessonInfo(lesson);
     }
 
+    public FindLessonResult findLessonAfterDate(PrincipalDetails userDetails, String date) {
+        int year = Integer.parseInt(date.substring(0,4));
+        int month = Integer.parseInt(date.substring(5, 7));
+        int day = Integer.parseInt(date.substring(8, 10));
+        LocalDateTime dateTime = LocalDate.of(year, month, day).atStartOfDay();
+
+        long id = userDetails.getId();
+        List<Lesson> lessons = lessonRepository
+                .findLimit20ByEmployeeIdAndLessonDateTimeAfterOrderByLessonDateTime(id, dateTime);
+
+        List<LessonInfos> lessonInfos = lessonInfoMapper.convertLessonListToLessonInfoMapByDate(lessons);
+        return FindLessonResult.builder().lessonInfosList(lessonInfos).build();
+    }
+
     public FindLessonDateResult findLessonDate(PrincipalDetails userDetails, String focusDate) {
         int year = Integer.parseInt(focusDate.substring(0,4));
         int month = Integer.parseInt(focusDate.substring(5, 7));

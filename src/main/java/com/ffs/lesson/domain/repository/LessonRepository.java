@@ -16,5 +16,7 @@ public interface LessonRepository extends Repository<Lesson, Long> {
     void deleteById(Long id);
 
     List<Lesson> findAllByMemberIdAndLessonDateTimeBetween(Long memberId, LocalDateTime startTime, LocalDateTime endTime);
-    List<Lesson> findAllByEmployeeIdAndLessonDateTimeBetweenOrderByLessonDateTime(Long memberId, LocalDateTime startTime, LocalDateTime endTime);
+    List<Lesson> findAllByEmployeeIdAndLessonDateTimeBetweenOrderByLessonDateTime(Long employeeId, LocalDateTime startTime, LocalDateTime endTime);
+    List<Lesson> findLimit20ByEmployeeIdAndLessonDateTimeAfterOrderByLessonDateTime(Long employeeId, LocalDateTime dateTime);
+
 }

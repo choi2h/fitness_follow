@@ -40,6 +40,14 @@ public class LessonController {
         return ResponseEntity.ok().body(result);
     }
 
+    @GetMapping("/after/{date}")
+    public ResponseEntity<Object> findLessonForAfterDate(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                           @PathVariable String date) {
+        FindLessonResult result = lessonService.findLessonAfterDate(principalDetails, date);
+
+        return ResponseEntity.ok().body(result);
+    }
+
     @GetMapping("/month/{date}")
     public ResponseEntity<Object> findLessonDates(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                   @PathVariable String date) {
