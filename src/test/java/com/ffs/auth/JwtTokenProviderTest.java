@@ -1,9 +1,7 @@
 package com.ffs.auth;
 
 import com.ffs.auth.exception.InvalidTokenException;
-import com.ffs.user.Role;
-import com.ffs.user.User;
-import com.ffs.user.member.domain.Member;
+import com.ffs.user.domain.Role;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

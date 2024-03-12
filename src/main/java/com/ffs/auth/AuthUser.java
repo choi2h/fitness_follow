@@ -1,6 +1,6 @@
 package com.ffs.auth;
 
-import com.ffs.user.Role;
+import com.ffs.user.domain.Role;
 import lombok.Builder;
 import lombok.Getter;
 

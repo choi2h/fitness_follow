@@ -19,12 +19,15 @@ public class CustomLessonRepositoryImpl implements CustomLessonRepository{
     QLesson lesson = QLesson.lesson;
 
     @Override
-    public List<Lesson> findBySearchOptions(String memberName, LessonStatus status, LocalDateTime startTime, LocalDateTime endTime) {
+    public List<Lesson> findBySearchOptions(Long userId, String memberName,
+                                            LessonStatus status, LocalDateTime startTime, LocalDateTime endTime) {
         return queryFactory
                 .selectFrom(lesson)
                 .where(eqName(memberName),
                         eqStatus(status),
-                        eqDateTime(startTime, endTime))
+                        eqDateTime(startTime, endTime),
+                        eqEmployeeId(userId)
+                        )
                 .fetch();
     }
 
@@ -32,7 +35,7 @@ public class CustomLessonRepositoryImpl implements CustomLessonRepository{
         if (name == null) {
             return null;
         }
-        return lesson.member.name.eq(name);
+        return lesson.memberName.eq(name);
     }
 
     private BooleanExpression eqStatus(LessonStatus status) {
@@ -47,5 +50,9 @@ public class CustomLessonRepositoryImpl implements CustomLessonRepository{
             return null;
         }
         return lesson.lessonDateTime.between(startTime, endTime);
+    }
+
+    private BooleanExpression eqEmployeeId(Long employeeId) {
+        return lesson.employeeId.eq(employeeId);
     }
 }

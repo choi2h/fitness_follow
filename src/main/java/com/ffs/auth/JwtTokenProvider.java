@@ -31,7 +31,6 @@ public class JwtTokenProvider {
 
         Claims claims = Jwts.claims().setSubject(user.getLoginId());
         claims.put("username", user.getName());
-        claims.put("role", user.getRole());
 
         String accessToken = generateAccessToken(user, now, validity, claims);
         String refreshToken = generateRefreshToken(now, expiration, claims);
@@ -63,11 +62,6 @@ public class JwtTokenProvider {
 
     public String getPayload(final String token) {
         return tokenToJws(token).getBody().getSubject();
-    }
-
-    public String getUserType(final String token) {
-        return String.valueOf(tokenToJws(token).getBody().get("role"));
-
     }
 
     public boolean validateAbleToken(final String token) {

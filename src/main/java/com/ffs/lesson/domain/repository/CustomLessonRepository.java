@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface CustomLessonRepository {
 
-    List<Lesson> findBySearchOptions(String memberName, LessonStatus status,
+    List<Lesson> findBySearchOptions(Long userId, String memberName, LessonStatus status,
                                      LocalDateTime startTime, LocalDateTime endTime);
 }

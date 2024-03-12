@@ -67,8 +67,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private AuthUser getUserByToken(String token) {
         String userId = jwtTokenProvider.getPayload(token);
-        String role = jwtTokenProvider.getUserType(token);
 
-        return authUserProvider.getAuthUser(userId, role);
+        return authUserProvider.getAuthUser(userId);
     }
 }

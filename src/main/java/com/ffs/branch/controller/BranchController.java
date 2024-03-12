@@ -5,7 +5,6 @@ import com.ffs.branch.dto.BranchInfo;
 import com.ffs.branch.dto.BranchResult;
 import com.ffs.branch.dto.RegisterBranchRequest;
 import com.ffs.branch.dto.UpdateBranchRequest;
-import com.ffs.user.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

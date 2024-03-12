@@ -1,6 +1,6 @@
 package com.ffs.pay.domain;
 
-import com.ffs.user.employee.domain.Employee;
+import com.ffs.user.domain.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +20,7 @@ public class Pay {
 
     @ManyToOne
     @JoinColumn(name = "EMPLOYEE_ID")
-    private Employee employee;
+    private User user;
 
     @Column(name = "pay")
     private BigDecimal pay;

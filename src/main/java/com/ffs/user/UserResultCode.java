@@ -10,21 +10,14 @@ public enum UserResultCode implements ResultCode<String> {
     OK(DefaultResultCode.OK),
     FAIL(DefaultResultCode.FAILED),
 
-    // Member
-    NO_REGISTERED_MEMBER("M001", "등록되어 있는 회원이 없습니다.", HttpStatus.NOT_FOUND),
-    NOT_EXIST_MEMBER("M002", "존재하는 않는 회원입니다.", HttpStatus.NOT_FOUND),
-    NOT_EXIST_MEMBER_FOR_BRANCH("M003", "해당 지점에 등록되어있는 회원이 없습니다.", HttpStatus.NOT_FOUND),
-    INVALID_PASSWORD("M004", "비밀번호가 일치하지 않습니다..", HttpStatus.BAD_REQUEST),
-
-
-    //Employee
-    NO_REGISTERED_EMPLOYEE("E001", "등록되어 있는 직원이 없습니다.", HttpStatus.NOT_FOUND),
-    NOT_EXIST_EMPLOYEE("E002", "존재하는 않는 직원입니다.", HttpStatus.NOT_FOUND),
-    NOT_EXIST_EMPLOYEE_FOR_BRANCH("E003", "해당 지점에 근무하는 직원 정보가 없습니다.", HttpStatus.NOT_FOUND),
-    NOT_HAVE_PERMISSION_FOR_MEMBER("E004", "회원에 대한 권한이 없습니다.", HttpStatus.BAD_REQUEST),
-    NOT_HAVE_PERMISSION_FOR_EMPLOYEE("E005", "회원에 대한 권한이 없습니다.", HttpStatus.BAD_REQUEST),
-    INVALID_VALUE("E006", "잘못된 요청입니다.", HttpStatus.BAD_REQUEST),
-    INVALID_ROLE("E007", "잘못된 권한 정보입니다.", HttpStatus.BAD_REQUEST)
+    // USER
+    NO_REGISTERED_USER("U001", "등록되어 있는 회원이 없습니다.", HttpStatus.NOT_FOUND),
+    NOT_EXIST_USER("U002", "존재하는 않는 회원입니다.", HttpStatus.NOT_FOUND),
+    NOT_EXIST_USER_FOR_BRANCH("U003", "해당 지점에 등록되어있는 회원이 없습니다.", HttpStatus.NOT_FOUND),
+    INVALID_PASSWORD("U004", "비밀번호가 일치하지 않습니다..", HttpStatus.BAD_REQUEST),
+    NOT_HAVE_PERMISSION_FOR_USER("U005", "회원에 대한 권한이 없습니다.", HttpStatus.BAD_REQUEST),
+    INVALID_VALUE("U006", "잘못된 요청입니다.", HttpStatus.BAD_REQUEST),
+    INVALID_ROLE("U007", "잘못된 권한 정보입니다.", HttpStatus.BAD_REQUEST)
     ;
 
     @Getter

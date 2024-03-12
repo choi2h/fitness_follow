@@ -1,18 +1,16 @@
 package com.ffs.purchase_history.application;
 
-import com.ffs.common.exception.ServiceResultCodeException;
 import com.ffs.branch.BranchResultCode;
 import com.ffs.branch.domain.Branch;
 import com.ffs.branch.domain.repository.BranchRepository;
-import com.ffs.user.employee.domain.Employee;
-import com.ffs.user.employee.domain.repository.EmployeeRepository;
-import com.ffs.user.member.domain.Member;
-import com.ffs.user.member.domain.repository.MemberRepository;
+import com.ffs.common.exception.ServiceResultCodeException;
 import com.ffs.purchase_history.PurchaseHistoryResultCode;
 import com.ffs.purchase_history.domain.PurchaseHistory;
 import com.ffs.purchase_history.domain.repository.PurchaseHistoryRepository;
-import com.ffs.user.UserResultCode;
 import com.ffs.purchase_history.dto.RegisterPurchaseHistoryRequest;
+import com.ffs.user.UserResultCode;
+import com.ffs.user.domain.User;
+import com.ffs.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,8 +25,7 @@ public class PurchaseHistoryService {
 
     private final PurchaseHistoryRepository purchaseHistoryRepository;
     private final BranchRepository branchRepository;
-    private final MemberRepository memberRepository;
-    private final EmployeeRepository employeeRepository;
+    private final UserRepository userRepository;
 
     public PurchaseHistory registerNewPurchaseHistory(RegisterPurchaseHistoryRequest request) {
         Long branchId = request.getBranchId();
@@ -42,22 +39,10 @@ public class PurchaseHistoryService {
             throw new ServiceResultCodeException(BranchResultCode.NOT_EXIST_BRANCH, branchId);
         }
 
-        Optional<Member> optionalMember = memberRepository.findById(memberId);
-        if(optionalMember.isEmpty()) {
-            log.debug("Not exist member. memberId={}", memberId);
-            throw new ServiceResultCodeException(UserResultCode.NOT_EXIST_MEMBER, memberId);
-        }
-
-        Optional<Employee> optionalEmployee = employeeRepository.findById(employeeId);
-        if(optionalEmployee.isEmpty()) {
-            log.debug("Not exist employee. employeeId={}", employeeId);
-            throw new ServiceResultCodeException(UserResultCode.NOT_EXIST_EMPLOYEE, employeeId);
-        }
-
         Branch branch = optionalBranch.get();
-        Member member = optionalMember.get();
-        Employee employee = optionalEmployee.get();
-        PurchaseHistory purchaseHistory = makePurchaseHistory(branch, member, employee, request);
+        User memberUser = getUser(memberId);
+        User employeeUser = getUser(employeeId);
+        PurchaseHistory purchaseHistory = makePurchaseHistory(branch, memberUser, employeeUser, request);
 
         return purchaseHistoryRepository.save(purchaseHistory);
     }
@@ -75,11 +60,7 @@ public class PurchaseHistoryService {
         return purchaseHistoryList;
     }
 
-    /**
-     * 회원별 구매 기록을 조회할 수 있다.*
-     * @param memberId
-     * @return
-     */
+    // 회원별 구매 기록을 조회할 수 있다.
     public List<PurchaseHistory> getAllPurchaseHistoryByMemberId(Long memberId) {
         log.debug("Search purchase history for member. memberId={}", memberId);
         List<PurchaseHistory> purchaseHistoryList = purchaseHistoryRepository.findAllByMemberId(memberId);
@@ -104,7 +85,7 @@ public class PurchaseHistoryService {
 
         PurchaseHistory purchaseHistory = optionalPurchaseHistory.get();
         log.debug("Found purchase history by id. id={}, branchId={}, memberId={}",
-                id, purchaseHistory.getBranch().getId(), purchaseHistory.getMember().getId());
+                id, purchaseHistory.getBranch().getId(), purchaseHistory.getMemberId());
 
         return purchaseHistory;
     }
@@ -119,15 +100,27 @@ public class PurchaseHistoryService {
     // 구매기록이 삭제되면 구매 디테일도 삭제되어야 한다.
 
 
-    private PurchaseHistory makePurchaseHistory(Branch branch, Member member, Employee employee, RegisterPurchaseHistoryRequest request) {
+    private PurchaseHistory makePurchaseHistory(Branch branch, User memberUser, User employeeUser,
+                                                RegisterPurchaseHistoryRequest request) {
         return PurchaseHistory
                 .builder()
                 .branch(branch)
-                .member(member)
-                .employee(employee)
+                .memberId(memberUser.getId())
+                .memberName(memberUser.getName())
+                .employeeId(employeeUser.getId())
+                .employeeName(employeeUser.getName())
                 .dateTime(request.getDateTime())
                 .price(request.getPrice())
                 .comment(request.getComment())
                 .build();
+    }
+
+    private User getUser(Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if(userOptional.isEmpty()) {
+            throw new ServiceResultCodeException(UserResultCode.NOT_EXIST_USER, id);
+        }
+
+        return userOptional.get();
     }
 }

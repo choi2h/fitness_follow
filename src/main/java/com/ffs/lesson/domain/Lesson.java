@@ -1,8 +1,6 @@
 package com.ffs.lesson.domain;
 
 import com.ffs.lesson.domain.repository.LessonStatusConverter;
-import com.ffs.user.employee.domain.Employee;
-import com.ffs.user.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,13 +20,17 @@ public class Lesson {
     @Column(name = "LESSON_ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEMBER_ID")
-    private Member member;
+    @Column(name = "MEMBER_ID")
+    private Long memberId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "EMPLOYEE_ID")
-    private Employee employee;
+    @Column(name = "MEMBER_NAME")
+    private String memberName;
+
+    @Column(name = "EMPLOYEE_ID")
+    private Long employeeId;
+
+    @Column(name = "EMPLOYEE_NAME")
+    private String employeeName;
 
     @Column(name = "LESSON_DATETIME")
     private LocalDateTime lessonDateTime;
@@ -41,9 +43,12 @@ public class Lesson {
     private BigDecimal price;
 
     @Builder
-    public Lesson(Member member, Employee employee, LocalDateTime lessonDateTime, BigDecimal price) {
-        this.member = member;
-        this.employee = employee;
+    public Lesson(Long memberId, String memberName, Long employeeId, String employeeName,
+                  LocalDateTime lessonDateTime, BigDecimal price) {
+        this.memberId = memberId;
+        this.memberName = memberName;
+        this.employeeId = employeeId;
+        this.employeeName = employeeName;
         this.lessonDateTime = lessonDateTime;
         this.price = price;
         this.status = LessonStatus.RESERVE;

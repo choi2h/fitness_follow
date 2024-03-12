@@ -1,6 +1,6 @@
 package com.ffs.membership.domain;
 
-import com.ffs.user.member.domain.Member;
+import com.ffs.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,8 +20,8 @@ public class Membership {
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEMBER_ID")
-    private Member member;
+    @JoinColumn(name = "USER_ID")
+    private User user;
 
     @Column(name = "START_DATE")
     private LocalDate startDate;
@@ -33,8 +33,8 @@ public class Membership {
     private int availableSleepCount;
 
     @Builder
-    public Membership(Member member, LocalDate startDate, LocalDate endDate, int availableSleepCount){
-        this.member = member;
+    public Membership(User user, LocalDate startDate, LocalDate endDate, int availableSleepCount){
+        this.user = user;
         this.startDate = startDate;
         this.endDate = endDate;
         this.availableSleepCount = availableSleepCount;

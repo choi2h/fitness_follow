@@ -1,7 +1,7 @@
 package com.ffs.pt.application;
 
 import com.ffs.common.exception.ServiceResultCodeException;
-import com.ffs.user.member.domain.Member;
+import com.ffs.user.domain.User;
 import com.ffs.pt.dto.PtInfo;
 import com.ffs.pt.PtResultCode;
 import com.ffs.pt.domain.Pt;
@@ -22,10 +22,10 @@ public class PtService {
 
     private final PtRepository ptRepository;
 
-    public Pt registerPt(Member member, int totalCount, BigDecimal pricePerSession) {
+    public Pt registerPt(User user, int totalCount, BigDecimal pricePerSession) {
         log.debug("Register new pt membership. memberId={}, totalCount={} pricePerSession={}",
-                member.getId(), totalCount, pricePerSession);
-        Pt pt = getNewPt(member, totalCount, pricePerSession);
+                user.getId(), totalCount, pricePerSession);
+        Pt pt = getNewPt(user, totalCount, pricePerSession);
 
         return ptRepository.save(pt);
     }
@@ -71,10 +71,10 @@ public class PtService {
     }
 
 
-    private Pt getNewPt(Member member, int totalCount, BigDecimal pricePerSession) {
+    private Pt getNewPt(User user, int totalCount, BigDecimal pricePerSession) {
         return Pt
                 .builder()
-                .member(member)
+                .user(user)
                 .totalCount(totalCount)
                 .useCount(0)
                 .purchaseDate(LocalDate.now())

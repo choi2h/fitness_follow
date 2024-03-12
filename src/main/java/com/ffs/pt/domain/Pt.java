@@ -1,8 +1,8 @@
 package com.ffs.pt.domain;
 
 import com.ffs.common.exception.ServiceResultCodeException;
-import com.ffs.user.member.domain.Member;
 import com.ffs.pt.PtResultCode;
+import com.ffs.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +24,7 @@ public class Pt {
 
     @ManyToOne
     @JoinColumn(name = "MEMBER_ID")
-    private Member member;
+    private User user;
 
     @Column(name = "PURCHASE_DATE")
     private LocalDate purchaseDate;
@@ -39,8 +39,8 @@ public class Pt {
     private BigDecimal pricePerSession;
 
     @Builder
-    public Pt(Member member, LocalDate purchaseDate, int totalCount, int useCount, BigDecimal pricePerSession) {
-        this.member = member;
+    public Pt(User user, LocalDate purchaseDate, int totalCount, int useCount, BigDecimal pricePerSession) {
+        this.user = user;
         this.purchaseDate = purchaseDate;
         this.totalCount = totalCount;
         this.useCount = useCount;

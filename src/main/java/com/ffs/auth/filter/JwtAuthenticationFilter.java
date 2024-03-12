@@ -6,7 +6,7 @@ import com.ffs.auth.JwtTokenProvider;
 import com.ffs.auth.PrincipalDetails;
 import com.ffs.auth.Token;
 import com.ffs.auth.repository.redis.RedisUtil;
-import com.ffs.user.member.dto.LoginRequest;
+import com.ffs.user.dto.LoginRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,14 +30,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-//    public JwtAuthenticationFilter(AuthenticationManager authenticationManager,
-//                                   JwtTokenProvider jwtTokenProvider, AuthUserProvider authUserProvider) {
-//        this.authenticationManager = authenticationManager;
-//        this.jwtTokenProvider = jwtTokenProvider;
-//        this.authUserProvider = authUserProvider;
-//
-//    }
-
     // /login 요청을 하면 로그인 시도를 위해서 실행되는 함수
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -46,7 +38,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         LoginRequest loginRequest =  null;
         try {
             loginRequest = objectMapper.readValue(request.getInputStream(), LoginRequest.class);
-            log.debug("Login request. type={}, id={}", loginRequest.getType(), loginRequest.getId());
+            log.debug("Login request. id={}",  loginRequest.getId());
         } catch (IOException e) {
             log.error("Can not convert login request.", e);
         }

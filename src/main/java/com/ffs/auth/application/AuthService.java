@@ -48,9 +48,7 @@ public class AuthService {
         }
 
         jwtTokenProvider.validateAbleToken(token.getRefreshToken());
-        String role = jwtTokenProvider.getUserType(accessToken);
-
-        AuthUser authUser = authUserProvider.getAuthUser(userId, role);
+        AuthUser authUser = authUserProvider.getAuthUser(userId);
 
         Token newToken = jwtTokenProvider.createToken(authUser);
         newToken.setRefreshToken("Bearer " + refreshToken);

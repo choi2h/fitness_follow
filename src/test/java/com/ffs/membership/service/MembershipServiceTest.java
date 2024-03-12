@@ -1,10 +1,10 @@
 package com.ffs.membership.service;
 
-import com.ffs.user.member.domain.Member;
-import com.ffs.user.member.domain.repository.MemberRepository;
 import com.ffs.membership.application.MembershipService;
 import com.ffs.membership.domain.Membership;
 import com.ffs.membership.domain.repository.MembershipRepository;
+import com.ffs.user.domain.User;
+import com.ffs.user.domain.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -30,14 +30,14 @@ class MembershipServiceTest {
     MembershipRepository membershipRepository;
 
     @Mock
-    private MemberRepository memberRepository;
+    private UserRepository userRepository;
 
     @Test
     @DisplayName("회원은 멤버십을 등록할 수 있다.")
     void registerMembershipTest() {
         LocalDate localDate = LocalDate.now();
         long durationDay = 90;
-        Member member = Member.builder().build();
+        User user = User.builder().build();
         LocalDate endDate = localDate.plusDays(durationDay);
         Membership membership = Membership.builder().startDate(localDate).endDate(endDate).build();
 
@@ -45,7 +45,7 @@ class MembershipServiceTest {
         doReturn(membership).when(membershipRepository).save(any(Membership.class));
 
         // when
-        Membership result = membershipService.registerMembership(member, localDate, durationDay);
+        Membership result = membershipService.registerMembership(user, localDate, durationDay);
 
         // then
         assertEquals(localDate, result.getStartDate());
@@ -57,9 +57,9 @@ class MembershipServiceTest {
     @DisplayName("회원의 회원권 정보를 조회할 수 있다.")
     void getMembershipTest() {
         // given
-        Member member = Member.builder().name("최이화").build();
+        User user = User.builder().name("최이화").build();
         LocalDate localDate = LocalDate.now();
-        Membership membership = getNewMembership(member, localDate, localDate);
+        Membership membership = getNewMembership(user, localDate, localDate);
 
         long memberId = 1;
         doReturn(Optional.of(membership)).when(membershipRepository).findByMemberId(memberId);
@@ -71,10 +71,10 @@ class MembershipServiceTest {
         assertEquals(membership.getStartDate(), result.getStartDate());
     }
 
-    private Membership getNewMembership(Member member, LocalDate startDate, LocalDate endDate) {
+    private Membership getNewMembership(User user, LocalDate startDate, LocalDate endDate) {
         return Membership
                 .builder()
-                .member(member)
+                .user(user)
                 .startDate(startDate)
                 .endDate(endDate)
                 .availableSleepCount(2)

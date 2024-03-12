@@ -1,10 +1,10 @@
 package com.ffs.membership.application;
 
 import com.ffs.common.exception.ServiceResultCodeException;
-import com.ffs.user.member.domain.Member;
 import com.ffs.membership.MembershipResultCode;
 import com.ffs.membership.domain.Membership;
 import com.ffs.membership.domain.repository.MembershipRepository;
+import com.ffs.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,10 +21,10 @@ public class MembershipService {
 
     private final MembershipRepository membershipRepository;
 
-    public Membership registerMembership(Member member, LocalDate startDate, long durationDay) {
+    public Membership registerMembership(User user, LocalDate startDate, long durationDay) {
         LocalDate endDate = startDate.plusDays(durationDay);
         int sleepCount = (int) getSleepCount(durationDay);
-        Membership membership = getNewMembership(member, startDate, endDate, sleepCount);
+        Membership membership = getNewMembership(user, startDate, endDate, sleepCount);
 
         return membershipRepository.save(membership);
     }
@@ -41,10 +41,10 @@ public class MembershipService {
         return optionalMembership.get();
     }
 
-    private Membership getNewMembership(Member member, LocalDate startDate, LocalDate endDate, int sleepCount) {
+    private Membership getNewMembership(User user, LocalDate startDate, LocalDate endDate, int sleepCount) {
         return Membership
                 .builder()
-                .member(member)
+                .user(user)
                 .startDate(startDate)
                 .endDate(endDate)
                 .availableSleepCount(sleepCount)

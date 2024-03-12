@@ -8,18 +8,20 @@ import com.ffs.lesson.domain.Lesson;
 import com.ffs.lesson.domain.LessonStatus;
 import com.ffs.lesson.domain.repository.CustomLessonRepository;
 import com.ffs.lesson.domain.repository.LessonRepository;
-import com.ffs.lesson.dto.*;
+import com.ffs.lesson.dto.LessonInfo;
+import com.ffs.lesson.dto.LessonInfos;
 import com.ffs.lesson.dto.request.LessonCreateRequest;
+import com.ffs.lesson.dto.request.LessonOnDateRequest;
 import com.ffs.lesson.dto.request.LessonSearchRequest;
 import com.ffs.lesson.dto.request.LessonStatusUpdateRequest;
 import com.ffs.lesson.dto.response.LessonDateResult;
-import com.ffs.lesson.dto.request.LessonOnDateRequest;
 import com.ffs.lesson.dto.response.LessonSearchResult;
-import com.ffs.user.Role;
+import com.ffs.matching.domain.UserMatching;
+import com.ffs.matching.domain.repository.UserMatchingRepository;
 import com.ffs.user.UserResultCode;
-import com.ffs.user.employee.domain.Employee;
-import com.ffs.user.member.domain.Member;
-import com.ffs.user.member.domain.repository.MemberRepository;
+import com.ffs.user.domain.Role;
+import com.ffs.user.domain.User;
+import com.ffs.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,7 +32,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -38,16 +39,17 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class LessonService {
 
-    private final MemberRepository memberRepository;
+    private final UserRepository userRepository;
     private final LessonRepository lessonRepository;
     private final LessonInfoMapper lessonInfoMapper;
     private final CustomLessonRepository customLessonRepository;
+    private final UserMatchingRepository userMatchingRepository;
 
     // 레슨의 상태는 예약/취소/완료/결석 네가지로 관리될 수 있다.
     public void updateLessonState(PrincipalDetails userDetails, LessonStatusUpdateRequest request) {
         Lesson lesson = getLesson(request.getId());
 
-        Long lessonEmployeeId = lesson.getEmployee().getId();
+        Long lessonEmployeeId = lesson.getEmployeeId();
         if(!lessonEmployeeId.equals(userDetails.getId())) {
             throw new ServiceResultCodeException(LessonResultCode.NOT_HAVE_PERSIST_FOR_LESSON);
         }
@@ -66,14 +68,14 @@ public class LessonService {
         lessonRepository.save(lesson);
     }
 
-    //TODO 조건에 맞춰 자신의 레슨을 조회할 수 있다.
+    // 조건에 맞춰 자신의 레슨을 조회할 수 있다.
     // 날짜(월별, 일별, 설정 기간 내) / 상태 / 회원
     public LessonSearchResult searchLessons(PrincipalDetails userDetails, LessonSearchRequest request) {
         log.debug("Receive search lessons request. memberName={}, status={}, date[{}-{}]",
                 request.getMemberName(), request.getStatus(), request.getStartDateTime(), request.getEndDateTime());
 
         AuthUser authUser = userDetails.getAuthUser();
-        Role role = authUser.getRole();
+        Long userId = authUser.getUserId();
 
         String memberName = request.getMemberName();
         LessonStatus status = null;
@@ -84,7 +86,7 @@ public class LessonService {
         LocalDateTime endDateTime = request.getEndDateTime();
 
         List<Lesson> lessons = customLessonRepository
-                .findBySearchOptions(memberName, status, startDateTime, endDateTime);
+                .findBySearchOptions(userId, memberName, status, startDateTime, endDateTime);
 
         List<LessonInfos> lessonInfos = lessonInfoMapper.convertLessonListToLessonInfoMapByDate(lessons);
         return LessonSearchResult.builder().lessonInfosList(lessonInfos).build();
@@ -117,26 +119,33 @@ public class LessonService {
 
     // 신규 레슨을 등록할 수 있다.
     public void createLesson(PrincipalDetails userDetails, LessonCreateRequest request) {
-        log.debug("Receive request for register lesson.");
         Long memberId = request.getMemberId();
+        Long employeeId = userDetails.getId();
+
         log.debug("Register lesson memberId={}, employeeId={}", memberId, userDetails.getId());
-        Optional<Member> memberOptional = memberRepository.findById(memberId);
-        if(memberOptional.isEmpty()) {
-            throw new ServiceResultCodeException(UserResultCode.NOT_EXIST_MEMBER);
+
+        Optional<UserMatching> userMatchingOptional =
+                userMatchingRepository.findByMemberIdAndEmployeeId(memberId, employeeId);
+
+        if(userMatchingOptional.isEmpty()) {
+            throw new ServiceResultCodeException(UserResultCode.NOT_HAVE_PERMISSION_FOR_USER);
         }
 
-        Member member = memberOptional.get();
-        Employee employee = member.getEmployee();
-        if(employee == null ||
-                !Objects.equals(employee.getId(), userDetails.getId())) {
-            throw new ServiceResultCodeException(UserResultCode.NOT_HAVE_PERMISSION_FOR_MEMBER);
+        UserMatching userMatching = userMatchingOptional.get();
+        LocalDateTime current = LocalDateTime.now();
+        if(!userMatching.getCreatedAt().isBefore(current) || !userMatching.getFinishedAt().isAfter(current)) {
+            throw new ServiceResultCodeException(UserResultCode.NOT_HAVE_PERMISSION_FOR_USER);
         }
 
         LocalDateTime lessonDateTime = request.getLessonDateTime();
+        User memberUser = getUser(memberId);
+        User employeeUser = getUser(employeeId);
 
         Lesson lesson = Lesson.builder()
-                .employee(employee)
-                .member(member)
+                .employeeId(employeeUser.getId())
+                .employeeName(employeeUser.getName())
+                .memberId(memberUser.getId())
+                .memberName(memberUser.getName())
                 .lessonDateTime(lessonDateTime)
                 .price(BigDecimal.ONE)
                 .build();
@@ -147,7 +156,7 @@ public class LessonService {
     // 레슨 ID를 이용해 레슨의 상세 정보를 조회할 수 있다.
     public LessonInfo findLessonInfoById(PrincipalDetails userDetails, Long lessonId) {
         Lesson lesson = getLesson(lessonId);
-        Long lessonEmployeeId = lesson.getEmployee().getId();
+        Long lessonEmployeeId = lesson.getEmployeeId();
         if(!lessonEmployeeId.equals(userDetails.getId())) {
             throw new ServiceResultCodeException(LessonResultCode.NOT_HAVE_PERSIST_FOR_LESSON);
         }
@@ -198,7 +207,7 @@ public class LessonService {
     // 레슨 ID로 레슨 취소(삭제)가 가능하다
     public void deleteLesson(PrincipalDetails userDetails, Long lessonId) {
         Lesson lesson = getLesson(lessonId);
-        Long lessonEmployeeId = lesson.getEmployee().getId();
+        Long lessonEmployeeId = lesson.getEmployeeId();
         if(!lessonEmployeeId.equals(userDetails.getId())) {
             throw new ServiceResultCodeException(LessonResultCode.NOT_HAVE_PERSIST_FOR_LESSON);
         }
@@ -206,7 +215,7 @@ public class LessonService {
         lessonRepository.deleteById(lessonId);
     }
 
-    // 레슨ID로 레슨 조회한다.
+    // 레슨ID로 레슨을 조회한다.
     private Lesson getLesson(Long id) {
         Optional<Lesson> optionalLesson = lessonRepository.findById(id);
         if(optionalLesson.isEmpty()) {
@@ -214,5 +223,14 @@ public class LessonService {
         }
 
         return optionalLesson.get();
+    }
+
+    private User getUser(Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if(userOptional.isEmpty()) {
+            throw new ServiceResultCodeException(UserResultCode.NOT_EXIST_USER);
+        }
+
+        return userOptional.get();
     }
 }

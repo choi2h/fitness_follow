@@ -1,8 +1,6 @@
 package com.ffs.purchase_history.domain;
 
 import com.ffs.branch.domain.Branch;
-import com.ffs.user.employee.domain.Employee;
-import com.ffs.user.member.domain.Member;
 import com.ffs.purchase_detail.domain.PurchaseDetail;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,13 +26,17 @@ public class PurchaseHistory {
     @JoinColumn(name = "BRANCH_ID")
     private Branch branch;
 
-    @ManyToOne
-    @JoinColumn(name = "MEMBER_ID")
-    private Member member;
+    @Column(name = "MEMBER_ID")
+    private Long memberId;
 
-    @ManyToOne
-    @JoinColumn(name = "EMPLOYEE_ID")
-    private Employee employee;
+    @Column(name = "MEMBER_ID")
+    private String memberName;
+
+    @Column(name = "EMPLOYEE_ID")
+    private Long employeeId;
+
+    @Column(name = "EMPLOYEE_NAME")
+    private String employeeName;
 
     @Column(name = "PURCHASE_DATE")
     private LocalDateTime dateTime;
@@ -49,10 +51,13 @@ public class PurchaseHistory {
     private List<PurchaseDetail> purchaseDetail;
 
     @Builder
-    public PurchaseHistory(Branch branch, Member member, Employee employee, LocalDateTime dateTime, BigDecimal price, String comment) {
+    public PurchaseHistory(Branch branch, Long memberId, String memberName, Long employeeId, String employeeName,
+                           LocalDateTime dateTime, BigDecimal price, String comment) {
         this.branch = branch;
-        this.member = member;
-        this.employee = employee;
+        this.memberId = memberId;
+        this.memberName = memberName;
+        this.employeeId = employeeId;
+        this.employeeName = employeeName;
         this.dateTime = dateTime;
         this.price = price;
         if(comment != null && !comment.isEmpty()) {
