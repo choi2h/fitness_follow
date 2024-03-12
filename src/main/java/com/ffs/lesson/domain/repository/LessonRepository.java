@@ -1,6 +1,7 @@
 package com.ffs.lesson.domain.repository;
 
 import com.ffs.lesson.domain.Lesson;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.Repository;
 
 import java.time.LocalDateTime;
