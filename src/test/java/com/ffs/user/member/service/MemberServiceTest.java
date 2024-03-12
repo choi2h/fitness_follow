@@ -83,6 +83,17 @@ class MemberServiceTest {
         assertEquals(memberList.size(), resultList.size());
     }
 
+    @Test
+    @DisplayName("직원에게 해당하는 회원을 조회할 수 있다.")
+    void getMemberListByEmployeeIdTest() {
+        // given
+
+        // when
+
+        // then
+
+    }
+
     private RegisterMemberRequest getRegisterMemberRequest() {
         return new RegisterMemberRequest
                 (1L, "최이화", "일반회원", "서울시", "010-0000-0000", "qwe", "1234");

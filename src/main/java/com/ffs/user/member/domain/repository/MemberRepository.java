@@ -3,6 +3,7 @@ package com.ffs.user.member.domain.repository;
 import com.ffs.user.member.domain.Member;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,8 +21,8 @@ public interface MemberRepository extends Repository<Member, Long> {
     List<Member> findAll();
 
     @Query("SELECT m FROM Member m WHERE m.branch.id = :id")
-    List<Member> findAllByBranchId(Long id);
+    List<Member> findAllByBranchId(@Param("id") Long id);
 
     @Query("SELECT m FROM Member m WHERE m.employee.id = :id")
-    List<Member> findAllByEmployeeId(Long id);
+    List<Member> findAllByEmployeeId(@Param("id") Long id);
 }

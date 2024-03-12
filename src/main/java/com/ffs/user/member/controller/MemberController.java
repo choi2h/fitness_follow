@@ -39,7 +39,7 @@ public class MemberController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN,ROLE_CEO,ROLE_MANAGER, ROLE_TRAINER')")
+    @PreAuthorize("hasRole('ROLE_MEMBER')")
     @GetMapping("/me")
     public ResponseEntity<Object> getMemberById(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         Long id = principalDetails.getId();
@@ -48,6 +48,16 @@ public class MemberController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN,ROLE_CEO,ROLE_MANAGER, ROLE_TRAINER')")
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getMemberById(@PathVariable("id") Long id) {
+        MemberInfo memberInfo = memberService.getMemberById(id);
+        MemberResult response = MemberResult.builder().member(memberInfo).build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
     @PreAuthorize("hasRole('ROLE_CEO, ROLE_MANAGER, ROLE_TRAINER')")
     @GetMapping("/my/members")
