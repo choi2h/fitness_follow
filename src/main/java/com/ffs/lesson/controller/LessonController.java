@@ -5,6 +5,7 @@ import com.ffs.lesson.LessonResultCode;
 import com.ffs.lesson.application.LessonService;
 import com.ffs.lesson.dto.*;
 import com.ffs.lesson.dto.request.LessonCreateRequest;
+import com.ffs.lesson.dto.request.LessonSearchRequest;
 import com.ffs.lesson.dto.request.LessonStatusUpdateRequest;
 import com.ffs.lesson.dto.response.LessonDateResult;
 import com.ffs.lesson.dto.request.LessonOnDateRequest;
@@ -41,6 +42,17 @@ public class LessonController {
         }
 
         LessonSearchResult result = LessonSearchResult.builder().lessonInfoList(lessons).build();
+
+        return ResponseEntity.ok().body(result);
+    }
+
+    @PostMapping("/filters")
+    public ResponseEntity<Object> findLessonByCondition(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                        @RequestBody LessonSearchRequest lessonSearchRequest) {
+        LessonSearchResult result = lessonService.searchLessons(principalDetails, lessonSearchRequest);
+//        if(lessons.isEmpty()) {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        }
 
         return ResponseEntity.ok().body(result);
     }

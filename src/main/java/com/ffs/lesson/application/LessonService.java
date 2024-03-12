@@ -6,9 +6,11 @@ import com.ffs.common.exception.ServiceResultCodeException;
 import com.ffs.lesson.LessonResultCode;
 import com.ffs.lesson.domain.Lesson;
 import com.ffs.lesson.domain.LessonStatus;
+import com.ffs.lesson.domain.repository.CustomLessonRepository;
 import com.ffs.lesson.domain.repository.LessonRepository;
 import com.ffs.lesson.dto.*;
 import com.ffs.lesson.dto.request.LessonCreateRequest;
+import com.ffs.lesson.dto.request.LessonSearchRequest;
 import com.ffs.lesson.dto.request.LessonStatusUpdateRequest;
 import com.ffs.lesson.dto.response.LessonDateResult;
 import com.ffs.lesson.dto.request.LessonOnDateRequest;
@@ -39,6 +41,7 @@ public class LessonService {
     private final MemberRepository memberRepository;
     private final LessonRepository lessonRepository;
     private final LessonInfoMapper lessonInfoMapper;
+    private final CustomLessonRepository customLessonRepository;
 
     // 레슨의 상태는 예약/취소/완료/결석 네가지로 관리될 수 있다.
     public void updateLessonState(PrincipalDetails userDetails, LessonStatusUpdateRequest request) {
@@ -65,6 +68,27 @@ public class LessonService {
 
     //TODO 조건에 맞춰 자신의 레슨을 조회할 수 있다.
     // 날짜(월별, 일별, 설정 기간 내) / 상태 / 회원
+    public LessonSearchResult searchLessons(PrincipalDetails userDetails, LessonSearchRequest request) {
+        log.debug("Receive search lessons request. memberName={}, status={}, date[{}-{}]",
+                request.getMemberName(), request.getStatus(), request.getStartDateTime(), request.getEndDateTime());
+
+        AuthUser authUser = userDetails.getAuthUser();
+        Role role = authUser.getRole();
+
+        String memberName = request.getMemberName();
+        LessonStatus status = null;
+        if(request.getStatus() != null) {
+            status = LessonStatus.getLessonStatus(request.getStatus());
+        }
+        LocalDateTime startDateTime = request.getStartDateTime();
+        LocalDateTime endDateTime = request.getEndDateTime();
+
+        List<Lesson> lessons = customLessonRepository
+                .findBySearchOptions(memberName, status, startDateTime, endDateTime);
+
+        List<LessonInfos> lessonInfos = lessonInfoMapper.convertLessonListToLessonInfoMapByDate(lessons);
+        return LessonSearchResult.builder().lessonInfosList(lessonInfos).build();
+    }
 
     // 요청 날짜에 해당하는 레슨 정보들을 조회한다.
     public List<LessonInfo> searchLessonOnDate(PrincipalDetails userDetails, LessonOnDateRequest request) {
