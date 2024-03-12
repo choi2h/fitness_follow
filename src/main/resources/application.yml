@@ -33,5 +33,5 @@ security:
   jwt:
     token:
       secret-key: secret
-      valid-length: 120000
+      valid-length: 12000000000000
       expire-length: 240000
