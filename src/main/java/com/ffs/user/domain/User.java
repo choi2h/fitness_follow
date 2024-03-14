@@ -1,6 +1,9 @@
 package com.ffs.user.domain;
 
 import com.ffs.branch.domain.Branch;
+import com.ffs.user.domain.repository.RoleConverter;
+import com.ffs.user.domain.repository.UserStatusConverter;
+import com.ffs.user.domain.repository.UserTypeConverter;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,14 +40,17 @@ public class User {
     @JoinColumn(name = "BRANCH_ID")
     private Branch branch;
 
+    @Convert(converter = UserTypeConverter.class)
     @Column(name = "TYPE")
     private UserType userType;
 
+    @Convert(converter = RoleConverter.class)
     @Column(name = "ROLE")
     private Role role; //(대표, 점장, 매니저, 트레이너, FC, 회원)
 
+    @Convert(converter = UserStatusConverter.class)
     @Column(name = "STATUS")
-    private String status; // 회원 - (일반회원, PT회원, 휴면회원, 만기회원) & 직원 - (재직중 , 퇴사)
+    private UserStatus status; // 회원 - (일반회원, PT회원, 휴면회원, 만기회원) & 직원 - (재직중 , 퇴사)
 
     @Column(name = "ADDRESS")
     private String address;
@@ -54,7 +60,7 @@ public class User {
 
     @Builder
     protected User(String name, String loginId, String password, String passwordType,
-                               String passwordSalt, Branch branch, UserType userType, Role role, String status,
+                               String passwordSalt, Branch branch, UserType userType, Role role, UserStatus status,
                                String address, String phoneNumber) {
         this.name = name;
         this.loginId = loginId;
@@ -79,6 +85,6 @@ public class User {
     }
 
     public void changeStatus(UserStatus status) {
-        this.status = status.getName();
+        this.status = status;
     }
 }
