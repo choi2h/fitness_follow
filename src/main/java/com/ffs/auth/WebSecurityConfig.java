@@ -54,8 +54,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(request -> request
 //                        .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                         .antMatchers("/login").permitAll()
-                        .antMatchers("/employee/join").permitAll()
-                        .antMatchers("/member/join").permitAll()
+                        .antMatchers("/join").permitAll()
                         .antMatchers("/auth/token").permitAll()
                         .anyRequest().authenticated()	// 어떠한 요청이라도 인증필요
                 )

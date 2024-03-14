@@ -22,6 +22,9 @@ public class JoinRequest {
     private String status;
 
     @NotEmpty
+    private String userType;
+
+    @NotEmpty
     private String address;
 
     @NotEmpty

@@ -9,23 +9,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
-
-    // 회원가입
-    @PostMapping
-    public ResponseEntity<Object> join(@RequestBody @Valid JoinRequest request) {
-        UserInfo userInfo = userService.join(request);
-        UserResult response = UserResult.builder().user(userInfo).build();
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
 
     // 회원 개인정보 수정
     @PutMapping
