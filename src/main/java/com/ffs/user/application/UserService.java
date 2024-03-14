@@ -8,6 +8,7 @@ import com.ffs.user.domain.Role;
 import com.ffs.user.domain.User;
 import com.ffs.user.UserResultCode;
 import com.ffs.user.domain.UserStatus;
+import com.ffs.user.domain.UserType;
 import com.ffs.user.domain.repository.UserRepository;
 import com.ffs.user.dto.JoinRequest;
 import com.ffs.user.dto.UpdateUserRequest;
@@ -15,6 +16,7 @@ import com.ffs.user.dto.UpdateUserStatusRequest;
 import com.ffs.user.dto.UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -27,6 +29,7 @@ public class UserService {
     private final BranchRepository branchRepository;
     private final UserRepository userRepository;
     private final UserInfoMapper userInfoMapper;
+    private final PasswordEncoder passwordEncoder;
 
 
     public UserInfo join(JoinRequest request) {
@@ -91,15 +94,18 @@ public class UserService {
     }
 
     private User makeNewUser(JoinRequest request, Branch branch) {
+        String encodePassword = passwordEncoder.encode(request.getPassword());
+
         return User
                 .builder()
                 .branch(branch)
                 .name(request.getName())
-                .status(request.getStatus())
+                .status(UserStatus.getUserStatusByName(request.getStatus()))
+                .userType(UserType.getUserTypeByName(request.getUserType()))
                 .address(request.getAddress())
                 .phoneNumber(request.getPhoneNumber())
                 .loginId(request.getLoginId())
-                .password(request.getPassword())
+                .password(encodePassword)
                 .build();
     }
 

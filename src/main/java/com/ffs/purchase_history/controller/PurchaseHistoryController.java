@@ -35,9 +35,9 @@ public class PurchaseHistoryController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping("/member/{id}")
-    public ResponseEntity<Object> getPurchaseHistoryListByMemberId(@PathVariable Long id) {
-        List<PurchaseHistory> purchaseHistoryList = purchaseHistoryService.getAllPurchaseHistoryByMemberId(id);
+    @GetMapping("/user/{id}")
+    public ResponseEntity<Object> getPurchaseHistoryListByUserId(@PathVariable Long id) {
+        List<PurchaseHistory> purchaseHistoryList = purchaseHistoryService.getAllPurchaseHistoryByUserId(id);
         PurchaseHistoryResult result = PurchaseHistoryResult.builder().purchaseHistoryList(purchaseHistoryList).build();
 
         return new ResponseEntity<>(result, HttpStatus.OK);

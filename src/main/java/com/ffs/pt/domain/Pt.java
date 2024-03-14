@@ -23,7 +23,7 @@ public class Pt {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "MEMBER_ID")
+    @JoinColumn(name = "USER_ID")
     private User user;
 
     @Column(name = "PURCHASE_DATE")

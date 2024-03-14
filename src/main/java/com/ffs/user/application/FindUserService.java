@@ -23,14 +23,14 @@ public class FindUserService {
 
     // 전체 회원 정보 조회
     public List<UserInfo> findAllUsers() {
-        List<User> memberList = userRepository.findAll();
-        if(memberList.isEmpty()) {
+        List<User> userList = userRepository.findAll();
+        if(userList.isEmpty()) {
             log.info("Not exist member anyone.");
             throw new ServiceResultCodeException(UserResultCode.NO_REGISTERED_USER);
         }
 
-        log.info("Found all members. count={}", memberList.size());
-        return userInfoMapper.converUserListToUserInfoList(memberList);
+        log.info("Found all members. count={}", userList.size());
+        return userInfoMapper.convertUserListToUserInfoList(userList);
     }
 
     // 회원ID로 회원 정보 조회
@@ -56,7 +56,7 @@ public class FindUserService {
         List<User> userList = findUserListByBranchIdAndUserType(branchId, UserType.MEMBER);
 
         log.info("Found member user list by branch id. count={}", userList.size());
-        return userInfoMapper.converUserListToUserInfoList(userList);
+        return userInfoMapper.convertUserListToUserInfoList(userList);
     }
 
     // 지점에 등록되어 있는 직원 정보 조회
@@ -66,7 +66,7 @@ public class FindUserService {
         List<User> userList = findUserListByBranchIdAndUserType(branchId, UserType.EMPLOYEE);
 
         log.info("Found member user list by branch id. count={}", userList.size());
-        return userInfoMapper.converUserListToUserInfoList(userList);
+        return userInfoMapper.convertUserListToUserInfoList(userList);
     }
 
     private List<User> findUserListByBranchIdAndUserType(Long branchId, UserType userType) {

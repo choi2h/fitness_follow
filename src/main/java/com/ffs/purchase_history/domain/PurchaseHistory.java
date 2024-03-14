@@ -29,7 +29,7 @@ public class PurchaseHistory {
     @Column(name = "MEMBER_ID")
     private Long memberId;
 
-    @Column(name = "MEMBER_ID")
+    @Column(name = "MEMBER_NAME")
     private String memberName;
 
     @Column(name = "EMPLOYEE_ID")

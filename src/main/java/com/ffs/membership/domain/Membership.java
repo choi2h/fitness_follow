@@ -15,7 +15,7 @@ import java.time.LocalDate;
 public class Membership {
 
     @Id
-    @Column(name = "MEMBER_ID")
+    @Column(name = "MEMBERSHIP_ID")
     private Long id;
 
     @MapsId

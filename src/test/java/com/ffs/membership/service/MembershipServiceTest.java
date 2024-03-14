@@ -62,7 +62,7 @@ class MembershipServiceTest {
         Membership membership = getNewMembership(user, localDate, localDate);
 
         long memberId = 1;
-        doReturn(Optional.of(membership)).when(membershipRepository).findByMemberId(memberId);
+        doReturn(Optional.of(membership)).when(membershipRepository).findByUserId(memberId);
 
         // when
         Membership result = membershipService.getMembershipById(memberId);

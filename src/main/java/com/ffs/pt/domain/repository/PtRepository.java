@@ -11,9 +11,9 @@ public interface PtRepository extends Repository<Pt, Long> {
 
     Pt save(Pt pt);
 
-    @Query("SELECT p FROM Pt p WHERE p.member.id = :memberId")
-    List<Pt> findAllByMemberId(Long memberId);
+    @Query("SELECT p FROM Pt p WHERE p.user.id = :userId")
+    List<Pt> findAllByMemberId(Long userId);
 
-    @Query("SELECT p FROM Pt p WHERE p.member.id = :memberId AND p.totalCount > p.useCount ORDER BY p.purchaseDate DESC")
-    Optional<Pt> findByMemberIdAndPurchaseDate(Long memberId);
+    @Query("SELECT p FROM Pt p WHERE p.user.id = :userId AND p.totalCount > p.useCount ORDER BY p.purchaseDate DESC")
+    Optional<Pt> findByMemberIdAndPurchaseDate(Long userId);
 }

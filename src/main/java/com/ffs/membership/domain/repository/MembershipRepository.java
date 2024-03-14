@@ -10,7 +10,7 @@ public interface MembershipRepository extends Repository<Membership, Long> {
 
     Membership save(Membership membership);
 
-    @Query("SELECT m FROM Membership m WHERE m.member.id = :memberId")
-    Optional<Membership> findByMemberId(Long memberId);
+    @Query("SELECT m FROM Membership m WHERE m.user.id = :userId")
+    Optional<Membership> findByUserId(Long userId);
 
 }

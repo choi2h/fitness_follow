@@ -48,7 +48,7 @@ public class FindUserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/{branch_id}/employee")
     public ResponseEntity<Object> getAllEmployeeUsersByBranchId(@PathVariable("branch_id")Long branchId) {
-        List<UserInfo> userInfoList = findUserService.findMemberUsersByBranchId(branchId);
+        List<UserInfo> userInfoList = findUserService.findEmployeeUsersByBranchId(branchId);
         UserResult response = UserResult.builder().userList(userInfoList).build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);

@@ -11,21 +11,21 @@ import java.util.Objects;
 @Component
 public class UserInfoMapper {
 
-    protected UserInfo convertUserToUserInfo(User member) {
+    protected UserInfo convertUserToUserInfo(User user) {
         return UserInfo
                 .builder()
-                .id(member.getId())
-                .branchId(Objects.isNull(member.getBranch()) ? null :  member.getBranch().getId())
-                .branchName(Objects.isNull(member.getBranch()) ? null :  member.getBranch().getName())
-                .name(member.getName())
-                .status(member.getStatus())
-                .address(member.getAddress())
-                .phoneNumber(member.getPhoneNumber())
-                .loginId(member.getLoginId())
+                .id(user.getId())
+                .branchId(Objects.isNull(user.getBranch()) ? null :  user.getBranch().getId())
+                .branchName(Objects.isNull(user.getBranch()) ? null :  user.getBranch().getName())
+                .name(user.getName())
+                .status(user.getStatus().name())
+                .address(user.getAddress())
+                .phoneNumber(user.getPhoneNumber())
+                .loginId(user.getLoginId())
                 .build();
     }
 
-    protected List<UserInfo> converUserListToUserInfoList(List<User> memberList) {
+    protected List<UserInfo> convertUserListToUserInfoList(List<User> memberList) {
         List<UserInfo> userInfoList = new ArrayList<>();
 
         for(User member : memberList) {

@@ -29,13 +29,13 @@ public class MembershipService {
         return membershipRepository.save(membership);
     }
 
-    public Membership getMembershipById(Long memberId) {
-        log.debug("Search membership by member id. memberId={}", memberId);
-        Optional<Membership> optionalMembership = membershipRepository.findByMemberId(memberId);
+    public Membership getMembershipById(Long userId) {
+        log.debug("Search membership by member id. userId={}", userId);
+        Optional<Membership> optionalMembership = membershipRepository.findByUserId(userId);
 
         if(optionalMembership.isEmpty()) {
-            log.debug("Not exist membership. memberId={}", memberId);
-            throw new ServiceResultCodeException(MembershipResultCode.NOT_EXIST_MEMBERSHIP, memberId);
+            log.debug("Not exist membership. userId={}", userId);
+            throw new ServiceResultCodeException(MembershipResultCode.NOT_EXIST_MEMBERSHIP, userId);
         }
 
         return optionalMembership.get();

@@ -16,6 +16,6 @@ public interface PurchaseHistoryRepository extends Repository<PurchaseHistory, L
     @Query("SELECT p FROM PurchaseHistory p where p.branch.id = :branchId")
     List<PurchaseHistory> findAllByBranchId(Long branchId);
 
-    @Query("SELECT p FROM PurchaseHistory p where p.member.id = :memberId")
-    List<PurchaseHistory> findAllByMemberId(Long memberId);
+    @Query("SELECT p FROM PurchaseHistory p where p.memberId = :userId")
+    List<PurchaseHistory> findAllByUserId(Long userId);
 }

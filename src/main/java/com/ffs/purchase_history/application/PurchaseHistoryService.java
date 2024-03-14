@@ -61,16 +61,16 @@ public class PurchaseHistoryService {
     }
 
     // 회원별 구매 기록을 조회할 수 있다.
-    public List<PurchaseHistory> getAllPurchaseHistoryByMemberId(Long memberId) {
-        log.debug("Search purchase history for member. memberId={}", memberId);
-        List<PurchaseHistory> purchaseHistoryList = purchaseHistoryRepository.findAllByMemberId(memberId);
+    public List<PurchaseHistory> getAllPurchaseHistoryByUserId(Long userId) {
+        log.debug("Search purchase history for member. userId={}", userId);
+        List<PurchaseHistory> purchaseHistoryList = purchaseHistoryRepository.findAllByUserId(userId);
 
         if(purchaseHistoryList.isEmpty()) {
-            log.debug("Nothing registered purchase history for member. memberId={}", memberId);
-            throw new ServiceResultCodeException(PurchaseHistoryResultCode.NOT_EXIST_PURCHASE_HISTORY_FOR_MEMBER, memberId);
+            log.debug("Nothing registered purchase history for member. userId={}", userId);
+            throw new ServiceResultCodeException(PurchaseHistoryResultCode.NOT_EXIST_PURCHASE_HISTORY_FOR_MEMBER, userId);
         }
 
-        log.debug("Found purchase history for member. memberId={}, count={}", memberId, purchaseHistoryList.size());
+        log.debug("Found purchase history for member. userId={}, count={}", userId, purchaseHistoryList.size());
         return purchaseHistoryList;
     }
 
