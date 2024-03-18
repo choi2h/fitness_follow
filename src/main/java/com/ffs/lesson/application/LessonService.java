@@ -93,16 +93,17 @@ public class LessonService {
     }
 
     // 요청 날짜에 해당하는 레슨 정보들을 조회한다.
-    public List<LessonInfo> searchLessonOnDate(PrincipalDetails userDetails, LessonOnDateRequest request) {
-        log.debug("Receive find lessons for date. date={}", request.getDateTime());
+    public List<LessonInfo> searchLessonOnDate(PrincipalDetails userDetails, String date) {
+        log.debug("Receive find lessons for date. date={}", date);
         AuthUser authUser = userDetails.getAuthUser();
 
         Role role = authUser.getRole();
 
         List<Lesson> lessonList;
-        LocalDateTime lessonDateTime = request.getDateTime();
-
-        LocalDateTime startTime = lessonDateTime.toLocalDate().atStartOfDay();
+        int year = Integer.parseInt(date.substring(0, 4));
+        int month = Integer.parseInt(date.substring(5, 7));
+        int day = Integer.parseInt(date.substring(8, 10));
+        LocalDateTime startTime = LocalDate.of(year, month, day).atStartOfDay();
         LocalDateTime endTime = startTime.plusDays(1).minusSeconds(1);
 
         Long userId = authUser.getUserId();

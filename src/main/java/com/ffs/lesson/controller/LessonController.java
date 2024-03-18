@@ -13,6 +13,7 @@ import com.ffs.lesson.dto.response.LessonSearchResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,11 @@ public class LessonController {
 
     private final LessonService lessonService;
 
+    /**
+     * 수업 등록
+     */
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN,ROLE_CEO,ROLE_MANAGER, ROLE_TRAINER')")
     public ResponseEntity<Object> registerLesson(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                  @RequestBody LessonCreateRequest lessonCreateRequest) {
         lessonService.createLesson(principalDetails, lessonCreateRequest);
@@ -33,10 +38,13 @@ public class LessonController {
         return ResponseEntity.ok(LessonResultCode.OK);
     }
 
-    @GetMapping
+    /**
+     * 해당 날짜의 레슨 조회
+     */
+    @GetMapping("/date/{date}")
     public ResponseEntity<Object> findLessons(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                              @RequestBody LessonOnDateRequest lessonOnDateRequest) {
-        List<LessonInfo> lessons = lessonService.searchLessonOnDate(principalDetails, lessonOnDateRequest);
+                                              @PathVariable String date) {
+        List<LessonInfo> lessons = lessonService.searchLessonOnDate(principalDetails, date);
         if(lessons.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -46,7 +54,12 @@ public class LessonController {
         return ResponseEntity.ok().body(result);
     }
 
+
+    /**
+     * 검색 조건에 맞는 레슨 조회
+     */
     @PostMapping("/filters")
+    @PreAuthorize("hasRole('ROLE_ADMIN,ROLE_CEO,ROLE_MANAGER, ROLE_TRAINER')")
     public ResponseEntity<Object> findLessonByCondition(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                         @RequestBody LessonSearchRequest lessonSearchRequest) {
         LessonSearchResult result = lessonService.searchLessons(principalDetails, lessonSearchRequest);
@@ -57,6 +70,10 @@ public class LessonController {
         return ResponseEntity.ok().body(result);
     }
 
+
+    /**
+     * 날짜 이후의 레슨 조회
+     */
     @GetMapping("/after/{date}")
     public ResponseEntity<Object> findLessonForAfterDate(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                            @PathVariable String date) {
@@ -65,6 +82,10 @@ public class LessonController {
         return ResponseEntity.ok().body(result);
     }
 
+
+    /**
+     * 월간 레슨 조회
+     */
     @GetMapping("/month/{date}")
     public ResponseEntity<Object> findLessonDates(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                   @PathVariable String date) {
@@ -73,7 +94,11 @@ public class LessonController {
         return ResponseEntity.ok().body(result);
     }
 
-    @PutMapping
+    /**
+     * 레슨 상태정보 수정
+    */
+    @PutMapping("/status")
+    @PreAuthorize("hasRole('ROLE_ADMIN,ROLE_CEO,ROLE_MANAGER, ROLE_TRAINER')")
     public ResponseEntity<Object> updateLessonStatus(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                @RequestBody LessonStatusUpdateRequest lessonStatusUpdateRequest) {
         lessonService.updateLessonState(principalDetails, lessonStatusUpdateRequest);
