@@ -5,12 +5,13 @@ import com.ffs.matching.dto.MatchingRequest;
 import com.ffs.matching.application.UserMatchingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/matching")
 @RequiredArgsConstructor
-public class UserCommonController {
+public class UserMatchingController {
 
     private final UserMatchingService commonService;
 
@@ -26,9 +27,10 @@ public class UserCommonController {
     }
 
     /**
-     * 직원-회원 매칭(담당자 지정)
+     * 회원에게 담당 직원 등록
      */
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN,ROLE_CEO,ROLE_MANAGER')")
     public ResponseEntity<?> matchingMemberByEmployee(@RequestBody MatchingRequest matchingRequest) {
         commonService.matchingMemberAndEmployee(matchingRequest);
 
