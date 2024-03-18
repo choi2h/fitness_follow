@@ -29,7 +29,7 @@ public class UserMatchingService {
         List<UserMatching> userMatchingList = userMatchingRepository.findAllByMemberIdOrderByFinishedAt(memberId);
         if(!userMatchingList.isEmpty()) {
             LocalDateTime lastFinishedAt = userMatchingList.get(userMatchingList.size()-1).getFinishedAt();
-            if(lastFinishedAt.isAfter(LocalDateTime.now())) {
+            if(lastFinishedAt != null && lastFinishedAt.isAfter(LocalDateTime.now())) {
                 throw new ServiceResultCodeException(UserResultCode.INVALID_VALUE);
             }
         }
