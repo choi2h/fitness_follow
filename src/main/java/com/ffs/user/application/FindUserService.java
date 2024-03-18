@@ -1,8 +1,8 @@
 package com.ffs.user.application;
 
 import com.ffs.common.exception.ServiceResultCodeException;
-import com.ffs.user.domain.User;
 import com.ffs.user.UserResultCode;
+import com.ffs.user.domain.User;
 import com.ffs.user.domain.UserType;
 import com.ffs.user.domain.repository.UserRepository;
 import com.ffs.user.dto.UserInfo;
@@ -66,6 +66,16 @@ public class FindUserService {
         List<User> userList = findUserListByBranchIdAndUserType(branchId, UserType.EMPLOYEE);
 
         log.info("Found member user list by branch id. count={}", userList.size());
+        return userInfoMapper.convertUserListToUserInfoList(userList);
+    }
+
+    // 매칭되어 있는 회원 정보 조회
+    public List<UserInfo> findMemberUsersByEmployeeId(Long employeeUserId) {
+        log.debug("Search for member users matched to employee. employeeUserId={}", employeeUserId);
+
+        List<User> userList = userRepository.findAllMatchingUserByEmployeeId(employeeUserId);
+
+        log.info("Found member users matched to employee. count={}", userList.size());
         return userInfoMapper.convertUserListToUserInfoList(userList);
     }
 

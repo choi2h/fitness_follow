@@ -63,4 +63,14 @@ public class FindUserController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    // 매칭되어 있는 회원정보 조회
+    @PreAuthorize("hasRole('ROLE_ADMIN,ROLE_CEO,ROLE_MANAGER, ROLE_TRAINER')")
+    @GetMapping("/matching")
+    public ResponseEntity<Object> getAllMemberUsersByEmployee(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        List<UserInfo> userInfoList = findUserService.findMemberUsersByEmployeeId(principalDetails.getId());
+        UserResult response = UserResult.builder().userList(userInfoList).build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

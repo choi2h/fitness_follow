@@ -24,13 +24,15 @@ public interface UserRepository extends Repository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.branch.id = :id and u.userType = :user_type")
     List<User> findAllByBranchIdAndUserType(@Param("id") Long id, @Param("user_type") UserType userType);
 
-    @Query("SELECT um FROM User  u " +
-            "INNER JOIN UserMatching um ON (um.employeeId = u.id) " +
-            "WHERE u.id = :userId AND u.userType = :user_type")
-    List<User> findAllChargeUserByEmployeeId(@Param("userId") Long id, @Param("user_type") UserType userType);
+    @Query("SELECT u FROM User  u " +
+            "INNER JOIN UserMatching um ON (um.memberId = u.id) " +
+            "WHERE um.employeeId = :userId")
+    List<User> findAllMatchingUserByEmployeeId(@Param("userId") Long id);
 
+    /*
     @Query("SELECT um FROM User  u " +
             "INNER JOIN UserMatching um ON (um.memberId = u.id) " +
             "WHERE u.id = :userId AND u.userType = :user_type")
     List<User> findAllChargeUserByMemberId(@Param("userId") Long id, @Param("user_type") UserType userType);
+    */
 }
