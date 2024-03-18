@@ -21,8 +21,11 @@ public class BranchController {
 
     private final BranchService branchService;
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    /**
+     * 신규 지점 등록
+     */
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN, ROLE_CEO')")
     private ResponseEntity<Object> registerNewBranch(@RequestBody @Valid RegisterBranchRequest request) {
         BranchInfo branchInfo = branchService.registerBranch(request);
         BranchResult result = BranchResult.builder().branch(branchInfo).build();
@@ -30,8 +33,11 @@ public class BranchController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN,ROLE_CEO')")
+    /**
+     * 모든 지점 조회
+     */
     @GetMapping("/all")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     private ResponseEntity<Object> findAllBranch() {
         List<BranchInfo> branchInfoList = branchService.getAllBranch();
         BranchResult result = BranchResult.builder().branchList(branchInfoList).build();
@@ -39,28 +45,37 @@ public class BranchController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    /**
+     * 지점ID로 지점 상세 정보 조회
+     */
+    @GetMapping("/{branch_id}")
     @PreAuthorize("hasRole('ROLE_ADMIN,ROLE_CEO')")
-    @GetMapping("/{id}")
-    private ResponseEntity<Object> findBranchById(@PathVariable Long id) {
+    private ResponseEntity<Object> findBranchById(@PathVariable("branch_id") Long id) {
         BranchInfo branchInfo = branchService.getBranchById(id);
         BranchResult result = BranchResult.builder().id(id).branch(branchInfo).build();
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN, ROLE_CEO, ROLE_MANAGER')")
-    @PutMapping("/{id}")
-    private ResponseEntity<Object> updateBranchInfo(@PathVariable Long id, @RequestBody @Valid UpdateBranchRequest request) {
+    /**
+     * 지점 정보 수정
+     */
+    @PutMapping("/{branch_id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN, ROLE_CEO')")
+    private ResponseEntity<Object> updateBranchInfo(@PathVariable("branch_id") Long id, @RequestBody @Valid UpdateBranchRequest request) {
         BranchInfo branchInfo = branchService.updateBranchById(id, request);
         BranchResult branchResult = BranchResult.builder().id(id).branch(branchInfo).build();
 
         return new ResponseEntity<>(branchResult, HttpStatus.OK);
     }
 
+    /**
+     * 지점 그룹에 해당하는 지점들 조회
+     */
+    @GetMapping("/all/{branch_group_id}")
     @PreAuthorize("hasRole('ROLE_ADMIN,ROLE_CEO')")
-    @GetMapping("/all/{id}")
-    public ResponseEntity<Object> findBranchListByGroupId(@PathVariable Long id) {
-        List<BranchInfo> branchInfoList = branchService.getAllBranchByBranchGroupId(id);
+    public ResponseEntity<Object> findBranchListByGroupId(@PathVariable("branch_group_id") Long groupId) {
+        List<BranchInfo> branchInfoList = branchService.getAllBranchByBranchGroupId(groupId);
         BranchResult result = BranchResult.builder().branchList(branchInfoList).build();
 
         return new ResponseEntity<>(result, HttpStatus.OK);
