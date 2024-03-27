@@ -1,0 +1,37 @@
+server:
+  port: 8080
+#  servlet:
+#    context-path: /
+#    encoding:
+#      charset: UTF-8
+#      enabled: true
+#      force: true
+
+spring:
+  redis:
+    port: 6379
+    host: 127.0.0.1
+    password: secure1234
+  datasource:
+#    url: jdbc:h2:tcp://localhost/~/ffs
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
+    url: jdbc:mysql://localhost:3306/ffs?serverTimezone=UTC&characterEncoding=UTF-8
+    username: ffsuser
+    password: sec1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+security:
+  jwt:
+    token:
+      secret-key: secret
+      valid-length: 12000000000000
+      expire-length: 240000
