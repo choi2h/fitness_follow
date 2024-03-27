@@ -28,8 +28,8 @@ public class FindUserController {
     @GetMapping("/me")
     public ResponseEntity<Object> getMemberById(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         Long id = principalDetails.getId();
-        UserInfo memberInfo = findUserService.findUserById(id);
-        UserResult response = UserResult.builder().user(memberInfo).build();
+        UserInfo userInfo = findUserService.findUserById(id);
+        UserResult response = UserResult.builder().user(userInfo).build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
