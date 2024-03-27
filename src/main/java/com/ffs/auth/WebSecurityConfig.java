@@ -56,6 +56,7 @@ public class WebSecurityConfig {
                         .antMatchers("/login").permitAll()
                         .antMatchers("/join").permitAll()
                         .antMatchers("/auth/token").permitAll()
+                        .antMatchers("/matching/info").permitAll()
                         .anyRequest().authenticated()	// 어떠한 요청이라도 인증필요
                 )
 //                .formLogin(login -> login	// form 방식 로그인 사용
