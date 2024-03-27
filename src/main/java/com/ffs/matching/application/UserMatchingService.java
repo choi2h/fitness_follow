@@ -6,6 +6,8 @@ import com.ffs.matching.domain.repository.UserMatchingRepository;
 import com.ffs.matching.dto.CheckMatchingResponse;
 import com.ffs.matching.dto.MatchingRequest;
 import com.ffs.user.UserResultCode;
+import com.ffs.user.domain.User;
+import com.ffs.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserMatchingService {
 
+    private final UserRepository userRepository;
     private final UserMatchingRepository userMatchingRepository;
 
     // 직원-회원 매칭(담당자 지정)
@@ -46,10 +49,23 @@ public class UserMatchingService {
     public CheckMatchingResponse checkMatchingMember(Long memberId, Long employeeId) {
         Optional<UserMatching> userMatchingOptional = userMatchingRepository.findByMemberIdAndEmployeeId(memberId, employeeId);
 
+        User memberUser = findUser(memberId);
+        User employeeUser = findUser(employeeId);
+
         if(userMatchingOptional.isEmpty()) {
-            return new CheckMatchingResponse(memberId, employeeId, false);
+            return new CheckMatchingResponse(memberId, memberUser.getName(), employeeId, employeeUser.getName(), false);
         }
 
-        return new CheckMatchingResponse(memberId, employeeId, true);
+        return new CheckMatchingResponse(memberId,  memberUser.getName(), employeeId, employeeUser.getName(), true);
+    }
+
+    private User findUser(Long userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+
+        if(userOptional.isEmpty()) {
+            throw new ServiceResultCodeException(UserResultCode.NOT_EXIST_USER);
+        }
+
+        return userOptional.get();
     }
 }

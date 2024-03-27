@@ -19,7 +19,7 @@ public class UserMatchingController {
      * 서로 매칭되어 있는 회원인지 확인
      * @return noContent
      */
-    @GetMapping
+    @GetMapping("/info")
     public ResponseEntity<?> checkUserAndEmployeeMatching(@RequestParam Long memberId, @RequestParam Long employeeId) {
         CheckMatchingResponse checkMatchingResponse = commonService.checkMatchingMember(memberId, employeeId);
 
